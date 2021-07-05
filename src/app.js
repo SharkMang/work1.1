@@ -9,16 +9,18 @@ class App {
 		this.todoList = [
             {
                 todoName: 'first',
-                isChecked: false
+                isChecked: false,
+                id: 10
             },
             {
                 todoName: 'second',
-                isChecked: false
+                isChecked: false,
+                id: 11
             },
         ];
 		
         this.initHeader = new HeaderInput(this.header, this.eventChangeStyleForAll, this.eventAddTodo);
-        this.initTodoList = new TodoList(this.section, this.todoList, this.eventChangeStyle, this.eventChangeTodo, this.eventRemove);
+        this.initTodoList = new TodoList(this.section, this.eventChangeStyle, this.eventChangeTodo, this.eventRemove);
   	}
 
 	render() {
@@ -37,52 +39,7 @@ class App {
             }
         }
         
-	    this.render();
-    }
-
-	eventRemove = (event) => {
-        let elem = event.target.parentNode;
-        let index = parseInt(elem.getAttribute('data-index'));
-        this.todoList.splice(index, 1);
-
-        this.initTodoList.render();
-    }
-
-	eventChangeTodo = (event) => {
-        let elem = event.target;
-	
-        elem.innerHTML = "";
-        let input1 = document.createElement("INPUT");
-        input1.type = "text";
-
-        input1.addEventListener("keydown", this.eventNewTodo);
-        input1.addEventListener("blur", this.eventBlurTodo);
-
-        elem.appendChild(input1);
-        input1.focus();
-    }
-
-	eventNewTodo = (event) => {
-
-        if(event.keyCode === 13 && event.target.value) {
-    
-            let todo = event.target.value;
-    
-            let div = event.target.closest('div');
-            let index = parseInt(div.getAttribute('data-index'));
-    
-            this.todoList[index].todoName = todo;
-    
-            this.initTodoList.render();
-        }
-    }
-
-	eventBlurTodo = (event) => {
-        let div = event.target.closest('div');
-        let label = event.target.closest('label');
-        let index = div.getAttribute('data-index');
-        
-        label.innerHTML = this.todoList[index].todoName;
+	    this.initTodoList.render(this.todoList);
     }
 
     eventAddTodo = (event) => {
@@ -90,7 +47,8 @@ class App {
         if(event.keyCode === 13 && event.target.value) {
             let newTodo = {
                 todoName: event.target.value,
-                isChecked: false
+                isChecked: false,
+                id: Math.round(Math.random() * 10000)
             };
 
             this.todoList.push(newTodo);
@@ -101,12 +59,65 @@ class App {
         }
     }
 
-	eventChangeStyle = (event) => {
-        const indexOfElem = event.target.parentElement.getAttribute('data-index');
-        let todo = this.todoList[indexOfElem];
+    eventChangeTodo = (event) => {
+        let elem = event.target;
+	
+        elem.innerHTML = "";
+        let input1 = document.createElement("INPUT");
+        input1.type = "text";
+
+        input1.addEventListener("keydown", this.eventChangeNameTodo);
+        input1.addEventListener("blur", this.eventBlurTodo);
+
+        elem.appendChild(input1);
+        input1.focus();
+    }
+
+	eventChangeNameTodo = (event) => {
+
+        if(event.keyCode === 13 && event.target.value) {
+            const todo = event.target.value;
+            
+            const div = event.target.closest('div');
+            const todoByIndex = this.getTodoById(div.id);
+            todoByIndex.todoName = todo;
+
+            let label = event.target.closest('label');
+            label.innerHTML = todo;
+        }
+    }
+
+    eventBlurTodo = (event) => {
+        let div = event.target.closest('div');
+        let label = event.target.closest('label');
+        const todoByIndex = this.getTodoById(div.id);
+
+        label.innerHTML = todoByIndex.todoName;
+    }
+
+    eventChangeStyle = (event) => {
+        const div = event.target.closest('div');
+        const todoByIndex = this.getTodoById(div.id);
         
-        todo.isChecked = !todo.isChecked;
-        this.initTodoList.render();
+        todoByIndex.isChecked = !todoByIndex.isChecked;
+
+        if(todoByIndex.isChecked) {
+            div.childNodes[1].className = 'label-item-marced';
+        } else {
+            div.childNodes[1].className = 'label-item-notmarced';
+        }
+    }
+
+	eventRemove = (event) => {
+        let div = event.target.parentNode;
+
+        this.todoList = this.todoList.filter(todo => todo.id !== parseInt(div.id));
+        let li = event.target.closest('li');
+        li.remove();
+    }
+
+    getTodoById = (id) => {
+        return this.todoList.find(todo => todo.id === parseInt(id));
     }
 
 	init() {
