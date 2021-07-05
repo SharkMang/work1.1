@@ -150,6 +150,9 @@ body{
     border-radius: 3px;
     cursor: pointer;
 }
+:focus{
+    border-color: rgba(34, 83, 105, 0.2);
+}
 
 .buttonDelFooter{
     float: right;

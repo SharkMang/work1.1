@@ -137,36 +137,18 @@ class App {
         this.initFooter.changeCount(this.todoList);
     }
 
-    eventClickOnAll = (event) => {
+    eventClickOnAll = () => {
         this.initTodoList.render(this.todoList);
-
-                // if(event.target.classList.contains('selected')){
-        //     event.target.classList.remove('selected');
-        // } else {
-        //     event.target.classList.add('selected');
-        // }
     }
 
-    eventClickOnActive = (event) => {
+    eventClickOnActive = () => {
         const todos = this.todoList.filter(todo => !todo.isChecked);
         this.initTodoList.render(todos);
-
-        // if(event.target.classList.contains('selected')){
-        //     event.target.classList.remove('selected');
-        // } else {
-        //     event.target.classList.add('selected');
-        // }
     }
 
-    eventClickOnComplited = (event) => {
+    eventClickOnComplited = () => {
         const todos = this.todoList.filter(todo => todo.isChecked);
         this.initTodoList.render(todos);
-
-        // if(event.target.classList.contains('selected')){
-        //     event.target.classList.remove('selected');
-        // } else {
-        //     event.target.classList.add('selected');
-        // }
     }
 
     eventRemoveAllChecked = () => {

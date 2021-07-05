@@ -25,6 +25,10 @@ class Footer {
         this.liComplited.addEventListener('click', this.handlerClickComplited);
         this.buttonDel.addEventListener('click', this.handlerClearButton);
 
+        this.liAll.tabIndex = 1;
+        this.liActive.tabIndex = 2;
+        this.liComplited.tabIndex = 3;
+
         this.ul.classList.add('ulFooter');
         this.liAll.classList.add('liFooter');
         this.liActive.classList.add('liFooter');
