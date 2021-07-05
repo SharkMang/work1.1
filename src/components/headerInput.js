@@ -4,6 +4,7 @@ class HeaderInput {
 
         this.checkBoxAll = document.createElement('input');
 	    this.checkBoxAll.type = 'checkbox';
+        this.checkBoxAll.classList.add('headerChackBox');
         this.checkBoxAll.addEventListener('change', handleCheckbox);
 
         this.input = document.createElement('input');

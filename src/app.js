@@ -3,8 +3,12 @@ class App {
       	this.container = document.getElementById(selector);
         this.section = document.createElement('section');
         this.header = document.createElement('header');
-        this.container.className = 'section';
+        this.footer = document.createElement('footer');
 
+        this.container.classList.add('container');
+        this.header.classList.add('header');
+        this.container.classList.add('section');
+        this.footer.classList.add('footer');
 
 		this.todoList = [
             {
@@ -18,20 +22,23 @@ class App {
                 id: 11
             },
         ];
-		
+
         this.initHeader = new HeaderInput(this.header, this.eventChangeStyleForAll, this.eventAddTodo);
         this.initTodoList = new TodoList(this.section, this.eventChangeStyle, this.eventChangeTodo, this.eventRemove);
+        this.initFooter = new Footer(this.footer, this.eventClickOnAll, this.eventClickOnActive, this.eventClickOnComplited, this.eventRemoveAllChecked);
   	}
 
 	render() {
 		this.initHeader.render();
 		this.initTodoList.render(this.todoList);
+        this.initFooter.render(this.todoList);
 	}
 
 	eventChangeStyleForAll = (event) => {
         let todos = this.todoList;
 
         for(let i = 0; i < todos.length; i++) {
+
             if(event.target.checked){
                 todos[i].isChecked = true;
             } else {
@@ -39,23 +46,29 @@ class App {
             }
         }
         
+        this.initFooter.changeCount(this.todoList);
 	    this.initTodoList.render(this.todoList);
     }
 
     eventAddTodo = (event) => {
 
-        if(event.keyCode === 13 && event.target.value) {
-            let newTodo = {
-                todoName: event.target.value,
-                isChecked: false,
-                id: Math.round(Math.random() * 10000)
-            };
+        if(event.keyCode === 13) {
 
-            this.todoList.push(newTodo);
+            if(this.isCorrectInput(event.target.value)) {
+                let newTodo = {
+                    todoName: event.target.value,
+                    isChecked: false,
+                    id: Math.round(Math.random() * 10000)
+                };
 
-            event.target.value = '';  
-			
-            this.initTodoList.addOneElem(newTodo);
+                this.todoList.push(newTodo);
+
+                event.target.value = '';  
+			    this.initFooter.changeCount(this.todoList);
+                this.initTodoList.addOneElem(newTodo);
+            } else {
+                event.target.value = '';
+            }
         }
     }
 
@@ -75,15 +88,20 @@ class App {
 
 	eventChangeNameTodo = (event) => {
 
-        if(event.keyCode === 13 && event.target.value) {
-            const todo = event.target.value;
-            
-            const div = event.target.closest('div');
-            const todoByIndex = this.getTodoById(div.id);
-            todoByIndex.todoName = todo;
+        if(event.keyCode === 13) {
 
-            let label = event.target.closest('label');
-            label.innerHTML = todo;
+            if(this.isCorrectInput(event.target.value)) {
+                const todo = event.target.value;
+                
+                const div = event.target.closest('div');
+                const todoByIndex = this.getTodoById(div.id);
+                todoByIndex.todoName = todo;
+
+                let label = event.target.closest('label');
+                label.innerHTML = todo;
+            } else {
+                event.target.value = '';
+            }
         }
     }
 
@@ -106,24 +124,73 @@ class App {
         } else {
             div.childNodes[1].className = 'label-item-notmarced';
         }
+
+        this.initFooter.changeCount(this.todoList);
     }
 
 	eventRemove = (event) => {
         let div = event.target.parentNode;
-
         this.todoList = this.todoList.filter(todo => todo.id !== parseInt(div.id));
         let li = event.target.closest('li');
         li.remove();
+
+        this.initFooter.changeCount(this.todoList);
     }
+
+    eventClickOnAll = (event) => {
+        this.initTodoList.render(this.todoList);
+
+                // if(event.target.classList.contains('selected')){
+        //     event.target.classList.remove('selected');
+        // } else {
+        //     event.target.classList.add('selected');
+        // }
+    }
+
+    eventClickOnActive = (event) => {
+        const todos = this.todoList.filter(todo => !todo.isChecked);
+        this.initTodoList.render(todos);
+
+        // if(event.target.classList.contains('selected')){
+        //     event.target.classList.remove('selected');
+        // } else {
+        //     event.target.classList.add('selected');
+        // }
+    }
+
+    eventClickOnComplited = (event) => {
+        const todos = this.todoList.filter(todo => todo.isChecked);
+        this.initTodoList.render(todos);
+
+        // if(event.target.classList.contains('selected')){
+        //     event.target.classList.remove('selected');
+        // } else {
+        //     event.target.classList.add('selected');
+        // }
+    }
+
+    eventRemoveAllChecked = () => {
+        this.todoList = this.todoList.filter(todo => !todo.isChecked);
+        this.initFooter.changeCount(this.todoList);
+        this.initTodoList.render(this.todoList);
+    }
+
+    isCorrectInput = (str) => {
+        const testStr = (str.search(/[^A-Za-z\s]/) == -1);
+
+        if(str && testStr){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 
     getTodoById = (id) => {
         return this.todoList.find(todo => todo.id === parseInt(id));
     }
 
 	init() {
-		this.container.classList.add('container');
-		this.header.classList.add('header');
-
 		const h1 = document.createElement('h1');
 		h1.innerHTML = 'Todos';
 		h1.classList.add('h1');
@@ -131,6 +198,7 @@ class App {
 
         this.container.appendChild(this.header);
         this.container.appendChild(this.section);
+        this.container.appendChild(this.footer);
 
 		this.render();
 	}

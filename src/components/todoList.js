@@ -2,19 +2,17 @@ class TodoList {
     constructor(container, handleChackbox, handleDbclickButton, handleDelButton) {
         this.container = container;
 
-        
         this.handleChackbox = handleChackbox;
         this.handleDbclickButton = handleDbclickButton;
         this.handleDelButton = handleDelButton;
 
         this.ul = document.createElement('ul');
-	    this.ul.classList.add('ulStyle');
+	    this.ul.classList.add('ulSection');
     }
 
     render(elemList) {
         this.ul.innerHTML = '';
 
-    
         for(let i = 0; i < elemList.length; i++) {
             this.addOneElem(elemList[i]);
         }
