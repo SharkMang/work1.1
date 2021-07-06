@@ -23,8 +23,8 @@ class App {
             },
         ];
 
-        this.initHeader = new HeaderInput(this.header, this.eventChangeStyleForAll, this.eventAddTodo);
-        this.initTodoList = new TodoList(this.section, this.eventChangeStyle, this.eventChangeTodo, this.eventRemove);
+        this.initHeader = new HeaderInput(this.header, this.eventChangeCheckedForAll, this.eventAddTodo);
+        this.initTodoList = new TodoList(this.section, this.eventChangeChecked, this.eventChangeTodo, this.eventRemoveTodo);
         this.initFooter = new Footer(this.footer, this.eventClickOnAll, this.eventClickOnActive, this.eventClickOnComplited, this.eventRemoveAllChecked);
   	}
 
@@ -34,7 +34,7 @@ class App {
         this.initFooter.render(this.todoList);
 	}
 
-	eventChangeStyleForAll = (event) => {
+	eventChangeCheckedForAll = (event) => {
         let todos = this.todoList;
 
         for(let i = 0; i < todos.length; i++) {
@@ -64,6 +64,9 @@ class App {
                 this.todoList.push(newTodo);
 
                 event.target.value = '';  
+
+                this.initHeader.changeCheckbox(this.todoList);
+
 			    this.initFooter.changeCount(this.todoList);
                 this.initTodoList.addOneElem(newTodo);
             } else {
@@ -114,7 +117,7 @@ class App {
         label.innerHTML = todoByIndex.todoName;
     }
 
-    eventChangeStyle = (event) => {
+    eventChangeChecked = (event) => {
         const div = event.target.closest('div');
         const todoByIndex = this.getTodoById(div.id);
         
@@ -126,15 +129,17 @@ class App {
             div.childNodes[1].className = 'label-item-notmarced';
         }
 
+        this.initHeader.changeCheckbox(this.todoList);
         this.initFooter.changeCount(this.todoList);
     }
 
-	eventRemove = (event) => {
+	eventRemoveTodo = (event) => {
         let div = event.target.parentNode;
         this.todoList = this.todoList.filter(todo => todo.id !== parseInt(div.id));
         let li = event.target.closest('li');
         li.remove();
 
+        this.initHeader.changeCheckbox(this.todoList);
         this.initFooter.changeCount(this.todoList);
     }
 
@@ -154,6 +159,8 @@ class App {
 
     eventRemoveAllChecked = () => {
         this.todoList = this.todoList.filter(todo => !todo.isChecked);
+
+        this.initHeader.changeCheckbox(this.todoList);
         this.initFooter.changeCount(this.todoList);
         this.initTodoList.render(this.todoList);
     }

@@ -22,4 +22,20 @@ class HeaderInput {
         this.header.appendChild(this.checkBoxAll);
         this.header.appendChild(this.input);
     }
+
+    changeCheckbox(todos) {
+        let count = 0;
+        
+        for(let todo of todos) {
+            if(todo.isChecked) {
+                count++;
+            }
+        }
+
+        if(todos.length === count) {
+            this.checkBoxAll.checked = true;
+        } else {
+            this.checkBoxAll.checked = false;
+        }
+    }
 }
