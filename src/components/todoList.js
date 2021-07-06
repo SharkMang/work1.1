@@ -29,6 +29,7 @@ class TodoList {
 
         let checkBox = document.createElement('input');
         checkBox.type = 'checkbox';
+        checkBox.classList.add('liCheckbox');
         checkBox.checked = elem.isChecked;
         checkBox.addEventListener('change', this.handleChackbox);
             

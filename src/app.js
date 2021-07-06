@@ -78,6 +78,7 @@ class App {
         elem.innerHTML = "";
         let input1 = document.createElement("INPUT");
         input1.type = "text";
+        input1.classList.add('liInput');
 
         input1.addEventListener("keydown", this.eventChangeNameTodo);
         input1.addEventListener("blur", this.eventBlurTodo);
@@ -166,7 +167,6 @@ class App {
             return false;
         }
     }
-
 
     getTodoById = (id) => {
         return this.todoList.find(todo => todo.id === parseInt(id));
