@@ -1,8 +1,9 @@
 class App {
   	constructor(selector) {
       	this.container = document.getElementById(selector);
-        this.section = document.createElement('section');
         this.header = document.createElement('header');
+        this.sectionNavigation = document.createElement('section');
+        this.sectionTodoList = document.createElement('section');
         this.footer = document.createElement('footer');
 
         this.container.classList.add('container');
@@ -23,32 +24,47 @@ class App {
             },
         ];
 
-        this.initHeader = new HeaderInput(this.header, this.eventChangeCheckedForAll, this.eventAddTodo);
-        this.initTodoList = new TodoList(this.section, this.eventChangeChecked, this.eventChangeTodo, this.eventRemoveTodo);
+        this.filterValue = 7;
+        this.navListCounter = (Math.trunc(this.todoList.length / this.filterValue) + 1);
+        
+        this.initHeader = new Header(this.header, this.eventChangeCheckedForAll, this.eventAddTodo);
+        this.initNavSection = new Navigator(this.sectionNavigation, this.eventClickOnNavPage);
+        this.initTodoList = new TodoList(this.sectionTodoList, this.eventChangeChecked, this.eventChangeTodo, this.eventRemoveTodo);
         this.initFooter = new Footer(this.footer, this.eventClickOnAll, this.eventClickOnActive, this.eventClickOnComplited, this.eventRemoveAllChecked);
   	}
 
 	render() {
 		this.initHeader.render();
+        this.initNavSection.render(this.navListCounter);
 		this.initTodoList.render(this.todoList);
         this.initFooter.render(this.todoList);
 	}
 
-	eventChangeCheckedForAll = (event) => {
-        let todos = this.todoList;
 
-        for(let i = 0; i < todos.length; i++) {
 
-            if(event.target.checked){
-                todos[i].isChecked = true;
-            } else {
-                todos[i].isChecked = false;
+    changeListOfNavPages = () => {
+        this.initNavSection.render(this.navListCounter);
+        this.moveToTheNavPage(this.navListCounter);
+    }
+
+    moveToTheNavPage = (index) => {
+        let todos = [];
+        index *= this.filterValue;
+
+        for(let i = (index - this.filterValue); i < index; i++) {
+            if(this.todoList[i]) {
+                todos.push(this.todoList[i]);
             }
         }
-        
-        this.initFooter.changeCount(this.todoList);
-	    this.initTodoList.render(this.todoList);
+        this.initTodoList.render(todos);
     }
+
+    eventClickOnNavPage = (event) => {
+        const id = parseInt(event.target.id);
+        this.moveToTheNavPage(id);
+    }
+
+
 
     eventAddTodo = (event) => {
 
@@ -66,14 +82,64 @@ class App {
                 event.target.value = '';  
 
                 this.initHeader.changeCheckbox(this.todoList);
-
 			    this.initFooter.changeCount(this.todoList);
-                this.initTodoList.addOneElem(newTodo);
+
+                if(this.todoList.length > (this.navListCounter * this.filterValue)) {
+                    this.navListCounter++;
+                    this.changeListOfNavPages();
+                } else {
+                    this.initTodoList.addOneElem(newTodo);
+                }
             } else {
                 event.target.value = '';
             }
         }
     }
+
+    eventRemoveTodo = (event) => {
+        let div = event.target.parentNode;
+        this.todoList = this.todoList.filter(todo => todo.id !== parseInt(div.id));
+        let li = event.target.closest('li');
+        li.remove();
+
+        this.initHeader.changeCheckbox(this.todoList);
+        this.initFooter.changeCount(this.todoList);
+
+        if(this.todoList.length < (this.navListCounter * this.filterValue)) {
+            this.navListCounter--;
+            this.changeListOfNavPages();
+        } 
+    }
+
+
+
+	eventChangeCheckedForAll = (event) => {
+        let todos = this.todoList;
+
+        for(let i = 0; i < todos.length; i++) {
+
+            if(event.target.checked){
+                todos[i].isChecked = true;
+            } else {
+                todos[i].isChecked = false;
+            }
+        }
+        
+        this.initFooter.changeCount(this.todoList);
+        this.changeListOfNavPages();
+
+    }
+
+    eventRemoveAllChecked = () => {
+        this.todoList = this.todoList.filter(todo => !todo.isChecked);
+
+        this.navListCounter = (Math.trunc(this.todoList.length / this.filterValue) + 1);
+        this.changeListOfNavPages();
+
+        this.initHeader.changeCheckbox(this.todoList);
+        this.initFooter.changeCount(this.todoList);
+    }
+
 
     eventChangeTodo = (event) => {
         let elem = event.target;
@@ -133,18 +199,10 @@ class App {
         this.initFooter.changeCount(this.todoList);
     }
 
-	eventRemoveTodo = (event) => {
-        let div = event.target.parentNode;
-        this.todoList = this.todoList.filter(todo => todo.id !== parseInt(div.id));
-        let li = event.target.closest('li');
-        li.remove();
 
-        this.initHeader.changeCheckbox(this.todoList);
-        this.initFooter.changeCount(this.todoList);
-    }
 
     eventClickOnAll = () => {
-        this.initTodoList.render(this.todoList);
+        this.changeListOfNavPages();
     }
 
     eventClickOnActive = () => {
@@ -157,13 +215,7 @@ class App {
         this.initTodoList.render(todos);
     }
 
-    eventRemoveAllChecked = () => {
-        this.todoList = this.todoList.filter(todo => !todo.isChecked);
 
-        this.initHeader.changeCheckbox(this.todoList);
-        this.initFooter.changeCount(this.todoList);
-        this.initTodoList.render(this.todoList);
-    }
 
     isCorrectInput = (str) => {
         const testStr = (str.search(/[^A-Za-z\s]/) == -1);
@@ -186,7 +238,8 @@ class App {
 		this.header.appendChild(h1);
 
         this.container.appendChild(this.header);
-        this.container.appendChild(this.section);
+        this.container.appendChild(this.sectionNavigation)
+        this.container.appendChild(this.sectionTodoList);
         this.container.appendChild(this.footer);
 
 		this.render();

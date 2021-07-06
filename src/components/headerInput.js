@@ -1,6 +1,6 @@
-class HeaderInput {
-    constructor(header, handleCheckbox, handleAddTodo) {
-        this.header = header;
+class Header {
+    constructor(container, handleCheckbox, handleAddTodo) {
+        this.container = container;
 
         this.checkBoxAll = document.createElement('input');
 	    this.checkBoxAll.type = 'checkbox';
@@ -19,8 +19,8 @@ class HeaderInput {
     }
 
     render() {
-        this.header.appendChild(this.checkBoxAll);
-        this.header.appendChild(this.input);
+        this.container.appendChild(this.checkBoxAll);
+        this.container.appendChild(this.input);
     }
 
     changeCheckbox(todos) {
@@ -32,7 +32,7 @@ class HeaderInput {
             }
         }
 
-        if(todos.length === count) {
+        if(todos.length === count && todos.length !== 0) {
             this.checkBoxAll.checked = true;
         } else {
             this.checkBoxAll.checked = false;

@@ -62,6 +62,21 @@ body{
     outline: 0;
 }
 
+.ulNavSection{
+    margin: 0;
+    padding-left: 10px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.liNavSection{
+    list-style-type: none;
+    cursor: pointer;
+    border: 1px solid #ededed;
+    border-radius: 20px;
+}
 
 .ulSection{
     width: 100%;
@@ -106,6 +121,7 @@ body{
 .label-item-marced{
     margin-left: 10px;
     text-decoration: line-through;
+    color: #d9d9d9;
 }
 
 .liInput{
@@ -140,7 +156,6 @@ body{
     text-align: center;
     border-top: 1px solid #e6e6e6;
     display: flex;
-    /* justify-content: space-between; */
     flex-direction: row;
 }
 
@@ -154,7 +169,7 @@ body{
     justify-content: space-between;
     flex-direction: row;
     align-items: center;
-    margin: 0px 70px 0px 70px;
+    margin: 0px 55px 0px 105px;
     padding: 0;
     list-style: none;
 }
@@ -174,25 +189,14 @@ body{
 }
 
 .buttonDelFooter{
-    float: right;
-    position: relative;
-    line-height: 20px;
-    text-decoration: none;
     cursor: pointer;
-    
-
-    margin: 0;
-    padding: 0;
-    border: 0;
-    background: none;
     font-size: 100%;
-    vertical-align: baseline;
     font-family: inherit;
     font-weight: inherit;
     color: inherit;
-    -webkit-appearance: none;
-    appearance: none;
-    -webkit-font-smoothing: antialiased;
+    padding: 0;
+    border: 0;
+    background: none;
 }
 
 .selected{

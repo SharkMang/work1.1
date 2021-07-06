@@ -16,24 +16,25 @@ class TodoList {
         for(let i = 0; i < elemList.length; i++) {
             this.addOneElem(elemList[i]);
         }
+
         this.container.appendChild(this.ul);
     }
 
     addOneElem = (elem) => {
-        let li = document.createElement('li');
+        const li = document.createElement('li');
         li.classList.add("listItem");
-        let div = document.createElement('div');
+        const div = document.createElement('div');
         div.id = elem.id;
         
         div.classList.add('box');
 
-        let checkBox = document.createElement('input');
+        const checkBox = document.createElement('input');
         checkBox.type = 'checkbox';
         checkBox.classList.add('liCheckbox');
         checkBox.checked = elem.isChecked;
         checkBox.addEventListener('change', this.handleChackbox);
             
-        let label = document.createElement('label');
+        const label = document.createElement('label');
         if(elem.isChecked) {
             label.classList.add('label-item-marced');
         } else {
@@ -43,7 +44,7 @@ class TodoList {
         label.classList.add('label-item');
         label.addEventListener('dblclick', this.handleDbclickButton);
 
-        let buttonDel = document.createElement('button');
+        const buttonDel = document.createElement('button');
         buttonDel.innerHTML = 'X';
         buttonDel.className = 'buttonDel';
         buttonDel.addEventListener('click', this.handleDelButton);
