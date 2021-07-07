@@ -133,6 +133,7 @@ class App {
                     }
                 }
             } else {
+                alert('Incorrect input');
                 event.target.value = '';
             }
         }
@@ -212,6 +213,7 @@ class App {
                 let label = event.target.closest('label');
                 label.innerHTML = todo;
             } else {
+                alert('Incorrect input');
                 event.target.value = '';
             }
         }
