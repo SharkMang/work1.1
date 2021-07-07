@@ -132,8 +132,9 @@ class App {
                         }
                     }
                 }
+                event.target.placeholder = 'What needs to be done?';
             } else {
-                alert('Incorrect input');
+                event.target.placeholder = 'Incorrect Value';
                 event.target.value = '';
             }
         }
@@ -213,7 +214,7 @@ class App {
                 let label = event.target.closest('label');
                 label.innerHTML = todo;
             } else {
-                alert('Incorrect input');
+                event.target.placeholder = 'Incorrect Value';
                 event.target.value = '';
             }
         }
