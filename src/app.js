@@ -64,7 +64,8 @@ class App {
         index *= this.filterValue;
 
         for(let i = (index - this.filterValue); i < index; i++) {
-            if(this.todoList[i]) {
+            if(todos[i]) {
+
                 newTodos.push(todos[i]);
             }
         }
@@ -79,6 +80,7 @@ class App {
 
         this.moveToTheNavPage(id, this.todoList);
     }
+
 
     changeStyleForChoosedElem = (idElem) => {
         let elem = document.getElementById(idElem);
@@ -111,16 +113,23 @@ class App {
                 this.initHeader.changeCheckbox(this.todoList);
 			    this.initFooter.changeCount(this.todoList);
 
-                console.log(this.todoList, `pages ${this.navListCounter}`);
 
-                if(this.todoList.length > (this.navListCounter * this.filterValue)) {
-                    this.navListCounter++;
+                if(this.prevChoosedFilter != 'all') {
+                    this.initFooter.removeClassSelected(this.prevChoosedFilter);
+                    const liAll = document.getElementById('all');
+                    liAll.classList.add('selected');
+                    this.prevChoosedFilter = 'all';
                     this.changeListOfNavPages(this.todoList);
                 } else {
-                    if(this.prevChoosedNav !== this.navListCounter) {
-                        this.moveToTheNavPage(this.navListCounter, this.todoList);
+                    if(this.todoList.length > (this.navListCounter * this.filterValue)) {
+                        this.navListCounter++;
+                        this.changeListOfNavPages(this.todoList);
                     } else {
-                        this.initTodoList.addOneElem(newTodo);
+                        if(this.prevChoosedNav !== this.navListCounter) {
+                            this.moveToTheNavPage(this.navListCounter, this.todoList);
+                        } else {
+                            this.initTodoList.addOneElem(newTodo);
+                        }
                     }
                 }
             } else {
@@ -168,8 +177,6 @@ class App {
 
         this.navListCounter = (Math.trunc(this.todoList.length / this.filterValue) + 1);
         this.changeListOfNavPages(this.todoList);
-        
-        console.log(this.todoList, `pages ${this.navListCounter}`);
 
         this.initHeader.changeCheckbox(this.todoList);
         this.initFooter.changeCount(this.todoList);
