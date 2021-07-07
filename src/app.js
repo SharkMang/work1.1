@@ -228,6 +228,7 @@ class App {
                 todoByIndex.todoName = todo;
 
                 let label = event.target.closest('label');
+                event.target.removeEventListener('blur', this.eventBlurTodo);
                 label.innerHTML = todo;
             } else {
                 event.target.placeholder = 'Incorrect Value';
