@@ -161,6 +161,10 @@ class App {
         this.initHeader.changeCheckbox(this.todoList);
         this.initFooter.changeCount(this.todoList);
 
+        if(this.prevChoosedNav !== this.navListCounter){
+            this.moveToTheNavPage(this.prevChoosedNav, this.todoList);
+        }
+
         if(this.todoList.length < (this.navListCounter * this.filterValue) && this.navListCounter !== 1 && this.todoList.length % this.filterValue === 0) {
             this.navListCounter--;
             this.changeListOfNavPages(this.todoList);
