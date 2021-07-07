@@ -27,8 +27,13 @@ class Navigator {
         if(this.ul.lastChild) {
             this.ul.lastChild.classList.add('selected');
         }
+
         
-        this.container.appendChild(this.ul);
+        if(index > 1) {
+            this.container.appendChild(this.ul);
+        } else {
+            this.ul.remove();
+        }
     }
 
     removeClassSelected = (index) => {
