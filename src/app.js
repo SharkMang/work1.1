@@ -61,6 +61,8 @@ class App {
         let newTodos = [];
         this.changeStyleForChoosedElem(index);
 
+        console.log(todos);
+
         index *= this.filterValue;
 
         for(let i = (index - this.filterValue); i < index; i++) {
@@ -78,7 +80,19 @@ class App {
 
         this.changeStyleForChoosedElem(id);
 
-        this.moveToTheNavPage(id, this.todoList);
+        switch(this.prevChoosedFilter) {
+            case 'all': 
+                this.moveToTheNavPage(id, this.todoList);
+                break;
+            case 'active':
+                {const todos = this.todoList.filter(todo => !todo.isChecked);
+                this.moveToTheNavPage(id, todos);}
+                break;
+            case 'complited':
+                {const todos = this.todoList.filter(todo => todo.isChecked);
+                this.moveToTheNavPage(id, todos);}
+                break;
+        }
     }
 
 
