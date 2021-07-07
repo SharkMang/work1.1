@@ -9,21 +9,29 @@ class Navigator {
     }
 
     render(index) {
-        // if(index !== 1) {
-            this.ul.innerHTML = '';
+        this.ul.innerHTML = '';
+
+        this.beforId = index;
+    
+        for(let i = 1; i <= index; i++) {
+            const li = document.createElement('li');
+    
+            li.id = i;
+            li.classList.add('liNavSection');
+            li.addEventListener('click', this.clickOnLi);
+            li.innerHTML = `${i} page.`;
+
+            this.ul.appendChild(li);
+        }
         
-            for(let i = 1; i < index + 1; i++) {
-                let li = document.createElement('li');
-    
-                li.id = i;
-                li.classList.add('liNavSection');
-                li.addEventListener('click', this.clickOnLi);
-                li.innerHTML = `${i} page.`;
-    
-                this.ul.appendChild(li);
-            }
-    
-            this.container.appendChild(this.ul);
-        //}
+        if(this.ul.lastChild) {
+            this.ul.lastChild.classList.add('selected');
+        }
+        
+        this.container.appendChild(this.ul);
+    }
+
+    removeClassSelected = (index) => {
+        this.ul.childNodes[index-1].classList.remove('selected');
     }
 }

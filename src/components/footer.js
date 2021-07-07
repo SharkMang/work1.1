@@ -25,9 +25,9 @@ class Footer {
         this.liComplited.addEventListener('click', this.handlerClickComplited);
         this.buttonDel.addEventListener('click', this.handlerClearButton);
 
-        this.liAll.tabIndex = 1;
-        this.liActive.tabIndex = 2;
-        this.liComplited.tabIndex = 3;
+        this.liAll.id = 'all';
+        this.liActive.id = 'active';
+        this.liComplited.id = 'complited';
 
         this.ul.classList.add('ulFooter');
         this.liAll.classList.add('liFooter');
@@ -43,6 +43,7 @@ class Footer {
     render(todos) {
         this.footer.appendChild(this.span);
         this.footer.appendChild(this.ul);
+        this.liAll.classList.add('selected');
         this.changeCount(todos);
     }
 
@@ -62,5 +63,10 @@ class Footer {
         }
 
         this.span.innerHTML = `${count} items left.`;
+    }
+
+    removeClassSelected = (id) => {
+        const elem = document.getElementById(id)
+        elem.classList.remove('selected');
     }
 }
