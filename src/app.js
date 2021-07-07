@@ -61,8 +61,6 @@ class App {
         let newTodos = [];
         this.changeStyleForChoosedElem(index);
 
-        console.log(todos);
-
         index *= this.filterValue;
 
         for(let i = (index - this.filterValue); i < index; i++) {
