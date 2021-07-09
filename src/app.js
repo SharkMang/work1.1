@@ -31,14 +31,15 @@ class App {
     this.prevChoosedFilter = 'all';
         
     this.initHeader = new Header(this.header, this.eventChangeCheckedForAll, this.eventAddTodo);
-    this.initTodoList = new TodoList(this.sectionTodoList, this.eventChangeChecked, this.eventChangeTodo, this.eventRemoveTodo);
+    this.initTodoList = new TodoList(this.filterValue, this.sectionTodoList, this.eventChangeChecked, this.eventChangeTodo, this.eventRemoveTodo);
     this.initNavSection = new Navigator(this.sectionNavigation, this.eventClickOnNavPage);
     this.initFooter = new Footer(this.footer, this.eventClickOnAll, this.eventClickOnActive, this.eventClickOnComplited, this.eventRemoveAllChecked);
+    this.initEventEmmiter = new EventEmmiter();
   }
   
   render() {
     this.initHeader.render();
-    this.initTodoList.render(this.todoList);
+    this.initTodoList.render(this.todoList,this.navListCounter);
     this.initNavSection.render(this.navListCounter);
     this.initFooter.render(this.todoList.length);
   }
@@ -113,7 +114,6 @@ class App {
 
           if (this.todoList.length > (this.navListCounter * this.filterValue)) {
             this.navListCounter++;
-            // this.moveToTheNavPage(this.navListCounter);
             this.changeListOfNavPages();
           } else {
 
@@ -151,19 +151,10 @@ class App {
       this.navListCounter--;
     }
 
-    let newTodos = [];
     this.prevChoosedNav = index;
     this.initNavSection.init(this.prevChoosedNav, this.navListCounter);
 
-    index *= this.filterValue;
-
-    for(let i = (index - this.filterValue); i < index; i++) {
-      if (todos[i]) {
-        newTodos.push(todos[i]);
-      }
-    }
-
-    this.initTodoList.render(newTodos);
+    this.initTodoList.render(todos, this.prevChoosedNav);
   }
 
   eventChangeChecked = (event) => {

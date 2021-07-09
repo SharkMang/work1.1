@@ -1,5 +1,5 @@
 class TodoList {
-  constructor(container, handleChackbox, handleDbclickButton, handleDelButton) {
+  constructor(filterValue, container, handleChackbox, handleDbclickButton, handleDelButton) {
     this.container = container;
 
     this.handleChackbox = handleChackbox;
@@ -8,13 +8,19 @@ class TodoList {
 
     this.ul = document.createElement('ul');
     this.ul.classList.add('ulSection');
+
+    this.filterValue = filterValue;
   }
 
-  render(elemList) {
+  render(elemList, currentPage) {
     this.ul.innerHTML = '';
 
-    for(let i = 0; i < elemList.length; i++) {
-      this.addOneElem(elemList[i]);
+    currentPage *= this.filterValue;
+
+    for(let i = (currentPage - this.filterValue); i < currentPage; i++) {
+      if (elemList[i]) {
+        this.addOneElem(elemList[i]);
+      }
     }
 
     this.container.appendChild(this.ul);
