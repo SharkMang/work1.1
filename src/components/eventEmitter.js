@@ -1,6 +1,7 @@
-class EventEmmiter {
+class EventEmitter {
   constructor() {
-    this.events = {};
+    this.events = {
+    };
   }
 
   subscribe(eventName, callback) {

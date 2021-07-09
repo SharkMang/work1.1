@@ -34,7 +34,7 @@ class App {
     this.initTodoList = new TodoList(this.filterValue, this.sectionTodoList, this.eventChangeChecked, this.eventChangeTodo, this.eventRemoveTodo);
     this.initNavSection = new Navigator(this.sectionNavigation, this.eventClickOnNavPage);
     this.initFooter = new Footer(this.footer, this.eventClickOnFilter, this.eventRemoveAllChecked);
-    this.initEventEmmiter = new EventEmmiter();
+    this.initEventEmitter = new EventEmitter();
   }
   
   render() {
@@ -224,6 +224,8 @@ class App {
 
     this.prevChoosedFilter = this.initFooter.renderClassSelected(id);
     this.changeListOfNavPages();
+    this.initEventEmitter.emit(this.prevChoosedFilter, 13212);
+    console.log(2, this.todoList);
   }
 
   eventClickOnNavPage = (event) => {
