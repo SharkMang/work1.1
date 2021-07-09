@@ -113,11 +113,12 @@ class App {
 
           if (this.todoList.length > (this.navListCounter * this.filterValue)) {
             this.navListCounter++;
+            // this.moveToTheNavPage(this.navListCounter);
             this.changeListOfNavPages();
           } else {
 
             if (this.prevChoosedNav !== this.navListCounter) {
-              this.moveToTheNavPage(this.navListCounter, this.todoList);
+              this.moveToTheNavPage(this.navListCounter);
             } else {
               this.initTodoList.addOneElem(newTodo);
             }
@@ -140,17 +141,19 @@ class App {
     }
 
     this.navListCounter = counterOfList;
-
-    this.initNavSection.render(counterOfList);
     this.moveToTheNavPage(counterOfList);
   }
 
   moveToTheNavPage = (index) => {
     let todos = this.choosedTodoList();
 
+    if(todos.length < (this.navListCounter * this.filterValue) && this.navListCounter !== 1 && this.choosedTodoList().length % this.filterValue === 0) {
+      this.navListCounter--;
+    }
+
     let newTodos = [];
-    this.initNavSection.renderClassSelected(index);
     this.prevChoosedNav = index;
+    this.initNavSection.init(this.prevChoosedNav, this.navListCounter);
 
     index *= this.filterValue;
 
@@ -184,23 +187,18 @@ class App {
     }
 
     if (this.prevChoosedFilter !== 'all') {
-      setTimeout( () => {
+      setTimeout(() => {
         let li = event.target.closest('li');
         li.remove();
-      },180);
 
-      if (this.prevChoosedNav !== this.navListCounter){
-        if (this.choosedTodoList().length < (this.navListCounter * this.filterValue) && this.navListCounter !== 1 && this.choosedTodoList().length % this.filterValue === 0) {
-          this.navListCounter--;
-          this.initNavSection.render(this.navListCounter);
+        if (this.prevChoosedNav !== this.navListCounter){
+          this.moveToTheNavPage(this.prevChoosedNav);
+        } else {
+          if (this.choosedTodoList().length < (this.navListCounter * this.filterValue) && this.navListCounter !== 1 && this.choosedTodoList().length % this.filterValue === 0) {
+            this.changeListOfNavPages();
+          }
         }
-        this.moveToTheNavPage(this.prevChoosedNav);
-      } else {
-        if (this.choosedTodoList().length < (this.navListCounter * this.filterValue) && this.navListCounter !== 1 && this.choosedTodoList().length % this.filterValue === 0) {
-          this.navListCounter--;
-          this.changeListOfNavPages();
-        }
-      }
+      },190);
     }
   }
   
@@ -274,16 +272,9 @@ class App {
     }
 
     if (this.prevChoosedNav !== this.navListCounter){
-
-      if(this.choosedTodoList().length < (this.navListCounter * this.filterValue) && this.navListCounter !== 1 && this.choosedTodoList().length % this.filterValue === 0) {
-        this.navListCounter--;
-        this.initNavSection.render(this.navListCounter);
-      }
       this.moveToTheNavPage(this.prevChoosedNav);
     } else {
-
       if (this.choosedTodoList().length < (this.navListCounter * this.filterValue) && this.navListCounter !== 1 && this.choosedTodoList().length % this.filterValue === 0) {
-        this.navListCounter--;
         this.changeListOfNavPages();
       }
     }
@@ -291,7 +282,6 @@ class App {
 
   eventRemoveAllChecked = () => {
     this.todoList = this.todoList.filter(todo => !todo.isChecked);
-
     this.changeListOfNavPages();
 
     this.initHeader.changeHeaderCheckbox(false);

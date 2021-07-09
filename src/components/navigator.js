@@ -8,6 +8,7 @@ class Navigator {
     this.ul.classList.add('ulNavSection');
 
     this.prevChoosedNav = 0;
+    this.countOfPages = 0;
   }
 
   render(totalPages) {
@@ -41,6 +42,16 @@ class Navigator {
       elem.classList.add('selected');
       this.ul.childNodes[this.prevChoosedNav-1].classList.remove('selected');
       this.prevChoosedNav = idElem;
+    }
+  }
+
+  init(currentPage, totalPages) {
+    if (this.countOfPages !== totalPages) {
+      this.render(totalPages);
+    }
+
+    if (currentPage !== this.prevChoosedNav) {
+      this.renderClassSelected(currentPage);
     }
   }
 }
