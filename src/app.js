@@ -113,7 +113,6 @@ class App {
         } else {
 
           if (this.todoList.length > (this.navListCounter * this.filterValue)) {
-            this.navListCounter++;
             this.changeListOfNavPages();
           } else {
 
@@ -141,13 +140,13 @@ class App {
     }
 
     this.navListCounter = counterOfList;
-    this.moveToTheNavPage(counterOfList);
+    this.moveToTheNavPage(this.navListCounter);
   }
 
   moveToTheNavPage = (index) => {
     let todos = this.choosedTodoList();
 
-    if(todos.length < (this.navListCounter * this.filterValue) && this.navListCounter !== 1 && this.choosedTodoList().length % this.filterValue === 0) {
+    if (todos.length < (this.navListCounter * this.filterValue) && this.navListCounter !== 1 && todos.length % this.filterValue === 0) {
       this.navListCounter--;
     }
 
@@ -301,7 +300,7 @@ class App {
 
     for(let i = 0; i < this.todoList.length; i++) {
 
-      if(this.todoList[i].isChecked) {
+      if (this.todoList[i].isChecked) {
         count--;
       }
     }
