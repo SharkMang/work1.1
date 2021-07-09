@@ -1,6 +1,6 @@
 class App {
   constructor(selector) {
-  	this.container = document.getElementById(selector);
+    this.container = document.getElementById(selector);
     this.header = document.createElement('header');
     this.sectionNavigation = document.createElement('section');
     this.sectionTodoList = document.createElement('section');
