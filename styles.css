@@ -38,8 +38,8 @@ body{
   font-weight: 100;
   text-align: center;
   color: rgba(175, 47, 47, 0.15);
-  -webkit-text-rendering: optimizeLegibility;
-  -moz-text-rendering: optimizeLegibility;
+  /* -webkit-text-rendering: optimizeLegibility;
+  -moz-text-rendering: optimizeLegibility; */
   text-rendering: optimizeLegibility;
 }
 
@@ -107,6 +107,12 @@ body{
   justify-content: space-between;
 }
 
+
+.box:hover .buttonDel{
+  background: white;
+  color: red;
+}
+
 .listItem{
   list-style-type: none;
   position: relative;
@@ -149,11 +155,6 @@ body{
   position: relative;
   box-sizing: border-box;
   transition: all 300ms ease;
-}
-
-.buttonDel:hover{
-  background: white;
-  color: red;
 }
 
 .footer{
