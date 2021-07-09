@@ -38,8 +38,6 @@ body{
   font-weight: 100;
   text-align: center;
   color: rgba(175, 47, 47, 0.15);
-  /* -webkit-text-rendering: optimizeLegibility;
-  -moz-text-rendering: optimizeLegibility; */
   text-rendering: optimizeLegibility;
 }
 
@@ -128,12 +126,16 @@ body{
 .label-item-notmarced{
   margin-left: 10px;
   text-decoration: none;
+  word-break: break-all;
+  width: 450px;
 }
 
 .label-item-marced{
   margin-left: 10px;
   text-decoration: line-through;
   color: #d9d9d9;
+  word-break: break-all;
+  width: 450px;
 }
 
 .liInput{
