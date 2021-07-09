@@ -1,11 +1,8 @@
 class Footer {
-  constructor(footer, handlerClickAll,handlerClickActive, handlerClickComplited, handlerClearButton) {
+  constructor(footer, handlerClickFilter, handlerClearButton) {
     this.footer = footer;
 
-    this.handlerClickAll = handlerClickAll;
-    this.handlerClickActive = handlerClickActive;
-    this.handlerClickComplited = handlerClickComplited;
-    this.handlerClearButton = handlerClearButton;
+    this.handlerClickOnLi = handlerClickFilter;
 
     this.span = document.createElement('span');
     this.ul = document.createElement('ul');
@@ -20,9 +17,9 @@ class Footer {
 
     this.buttonDel.innerHTML = 'Clear complited';
 
-    this.liAll.addEventListener('click', this.handlerClickAll);
-    this.liActive.addEventListener('click', this.handlerClickActive);
-    this.liComplited.addEventListener('click', this.handlerClickComplited);
+    this.liAll.addEventListener('click', this.handlerClickOnLi);
+    this.liActive.addEventListener('click', this.handlerClickOnLi);
+    this.liComplited.addEventListener('click', this.handlerClickOnLi);
     this.buttonDel.addEventListener('click', this.handlerClearButton);
 
     this.liAll.id = 'all';

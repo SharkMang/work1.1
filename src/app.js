@@ -33,7 +33,7 @@ class App {
     this.initHeader = new Header(this.header, this.eventChangeCheckedForAll, this.eventAddTodo);
     this.initTodoList = new TodoList(this.filterValue, this.sectionTodoList, this.eventChangeChecked, this.eventChangeTodo, this.eventRemoveTodo);
     this.initNavSection = new Navigator(this.sectionNavigation, this.eventClickOnNavPage);
-    this.initFooter = new Footer(this.footer, this.eventClickOnAll, this.eventClickOnActive, this.eventClickOnComplited, this.eventRemoveAllChecked);
+    this.initFooter = new Footer(this.footer, this.eventClickOnFilter, this.eventRemoveAllChecked);
     this.initEventEmmiter = new EventEmmiter();
   }
   
@@ -218,23 +218,7 @@ class App {
     this.initFooter.init(this.getCountOfNotChechedTodos(), this.todoList.length);
   }
 
-  eventClickOnAll = (event) => {
-    const elem = event.target;
-    const id = elem.id;
-
-    this.prevChoosedFilter = this.initFooter.renderClassSelected(id);
-    this.changeListOfNavPages();
-  }
-
-  eventClickOnActive = (event) => {
-    const elem = event.target;
-    const id = elem.id;
-
-    this.prevChoosedFilter = this.initFooter.renderClassSelected(id);
-    this.changeListOfNavPages();
-  }
-
-  eventClickOnComplited = (event) => {
+  eventClickOnFilter = (event) => {
     const elem = event.target;
     const id = elem.id;
 
