@@ -1,8 +1,8 @@
 class Navigator {
-  constructor(container, clickOnElem) {
+  constructor(container, initEE) {
     this.container = container;
 
-    this.clickOnLi = clickOnElem;
+    this.initEE = initEE;
 
     this.ul = document.createElement('ul');
     this.ul.classList.add('ulNavSection');
@@ -19,7 +19,7 @@ class Navigator {
 
       li.id = i;
       li.classList.add('liNavSection');
-      li.addEventListener('click', this.clickOnLi);
+      li.addEventListener('click', (event) => {this.initEE.emit('clickOnNavEl', parseInt(event.target.id))});
       li.innerHTML = `${i} page.`;
 
       this.ul.appendChild(li);
