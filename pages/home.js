@@ -1,4 +1,4 @@
-class App {
+class Home {
   constructor(selector) {
     this.container = document.getElementById(selector);
     this.header = document.createElement('header');
@@ -320,6 +320,4 @@ class App {
   }
 }
 
-window.onload = function() {
-  (new App('root')).init();
-}
+
