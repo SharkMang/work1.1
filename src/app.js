@@ -29,8 +29,6 @@ class App {
     this.prevChoosedNav = this.navListCounter;
     this.prevChoosedFilter = 'all';
 
-    this.filteredTodos = this.todoList;
-
     this.initEventEmitter = new EventEmitter();
 
     this.initHeader = new Header(this.header, this.initEventEmitter);
@@ -132,9 +130,10 @@ class App {
   }
 
   changeListOfNavPages = () => {
-    let counterOfList = (Math.trunc(this.filteredTodos.length / this.filterValue) + 1);
+    let todos = this.choosedTodoList();
+    let counterOfList = (Math.trunc(todos.length / this.filterValue) + 1);
 
-    if (this.filteredTodos.length % this.filterValue === 0 && counterOfList !== 1) {
+    if (todos.length % this.filterValue === 0 && counterOfList !== 1) {
       counterOfList--;
     }
 
@@ -143,15 +142,15 @@ class App {
   }
 
   moveToTheNavPage = (index) => {
-
-    if (this.filteredTodos.length < (this.navListCounter * this.filterValue) && this.navListCounter !== 1 && this.filteredTodos.length % this.filterValue === 0) {
+    let todos = this.choosedTodoList();
+    if (todos.length < (this.navListCounter * this.filterValue) && this.navListCounter !== 1 && todos.length % this.filterValue === 0) {
       this.navListCounter--;
     }
 
     this.prevChoosedNav = index;
     this.initNavSection.init(this.prevChoosedNav, this.navListCounter);
 
-    this.initTodoList.render(this.filteredTodos, this.prevChoosedNav);
+    this.initTodoList.render(todos, this.prevChoosedNav);
   }
 
   eventChangeChecked = (evTarg) => {
@@ -182,7 +181,7 @@ class App {
         if (this.prevChoosedNav !== this.navListCounter){
           this.moveToTheNavPage(this.prevChoosedNav);
         } else {
-          if (this.filteredTodos.length < (this.navListCounter * this.filterValue) && this.navListCounter !== 1 && this.filteredTodos.length % this.filterValue === 0) {
+          if (this.choosedTodoList().length < (this.navListCounter * this.filterValue) && this.navListCounter !== 1 && this.choosedTodoList().length % this.filterValue === 0) {
             this.changeListOfNavPages();
           }
         }
@@ -233,7 +232,7 @@ class App {
     if (this.prevChoosedNav !== this.navListCounter){
       this.moveToTheNavPage(this.prevChoosedNav);
     } else {
-      if (this.filteredTodos.length < (this.navListCounter * this.filterValue) && this.navListCounter !== 1 && this.filteredTodos.length % this.filterValue === 0) {
+      if (this.choosedTodoList().length < (this.navListCounter * this.filterValue) && this.navListCounter !== 1 && this.choosedTodoList().length % this.filterValue === 0) {
         this.changeListOfNavPages();
       }
     }
@@ -245,6 +244,23 @@ class App {
 
     this.initHeader.changeHeaderCheckbox(false);
     this.initFooter.init(this.getCountOfNotChechedTodos(), this.todoList.length);
+  }
+
+  choosedTodoList = () => {
+    let todos;
+
+    switch(this.prevChoosedFilter) {
+      case 'all': 
+        todos = this.todoList;
+        break;
+      case 'active':
+        todos = this.todoList.filter(todo => !todo.isChecked);
+        break;
+      case 'complited':
+        todos = this.todoList.filter(todo => todo.isChecked);
+        break;
+    }
+    return todos;
   }
 
   getCountOfNotChechedTodos = () => {
@@ -295,18 +311,6 @@ class App {
 
     this.initEventEmitter.subscribe('chooseFilter', (id) => {
       this.prevChoosedFilter = id;
-    
-      switch(id) {
-        case 'all': 
-          this.filteredTodos = this.todoList;
-          break;
-        case 'active':
-          this.filteredTodos = this.todoList.filter(todo => !todo.isChecked);
-          break;
-        case 'complited':
-          this.filteredTodos = this.todoList.filter(todo => todo.isChecked);
-          break;
-      }
       this.changeListOfNavPages();
     });
 
