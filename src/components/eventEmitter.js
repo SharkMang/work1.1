@@ -4,17 +4,16 @@ class EventEmitter {
     };
   }
 
-  subscribe(eventName, callback) {
-    if( !this.events[eventName] ) {
+  subscribe(eventName, fn) {
+    if(!this.events[eventName]) {
       this.events[eventName] = [];
     }
-     
-    this.events[eventName].push(callback);
-    console.log(this.events);
-  }
-
-  unsubscribe(eventName, callback) {
-    this.events[eventName] = this.events[eventName].filter(eventCallback => callback !== eventCallback);
+      
+    this.events[eventName].push(fn);
+    
+    return () => {
+      this.events[eventName] = this.events[eventName].filter(eventFn => fn !== eventFn);
+    }
   }
 
   emit(eventName, args) {

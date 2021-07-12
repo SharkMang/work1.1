@@ -27,14 +27,17 @@ class App {
     this.filterValue = 6;
     this.navListCounter = (Math.trunc(this.todoList.length / this.filterValue) + 1);
     this.prevChoosedNav = this.navListCounter;
-
     this.prevChoosedFilter = 'all';
-        
-    this.initHeader = new Header(this.header, this.eventChangeCheckedForAll, this.eventAddTodo);
-    this.initTodoList = new TodoList(this.filterValue, this.sectionTodoList, this.eventChangeChecked, this.eventChangeTodo, this.eventRemoveTodo);
-    this.initNavSection = new Navigator(this.sectionNavigation, this.eventClickOnNavPage);
-    this.initFooter = new Footer(this.footer, this.eventClickOnFilter, this.eventRemoveAllChecked);
+
+    this.filteredTodos = this.todoList;
+
     this.initEventEmitter = new EventEmitter();
+
+    this.initHeader = new Header(this.header, this.initEventEmitter);
+    this.initTodoList = new TodoList(this.filterValue, this.sectionTodoList, this.initEventEmitter);
+    this.initNavSection = new Navigator(this.sectionNavigation, this.initEventEmitter);
+    this.initFooter = new Footer(this.footer, this.initEventEmitter);
+    
   }
   
   render() {
@@ -44,9 +47,7 @@ class App {
     this.initFooter.render(this.todoList.length);
   }
 
-  eventChangeTodo = (event) => {
-    let elem = event.target;
-
+  eventChangeTodo = (elem) => {
     elem.innerHTML = "";
     let input1 = document.createElement("INPUT");
     input1.type = "text";
@@ -108,8 +109,7 @@ class App {
         this.initFooter.init(this.getCountOfNotChechedTodos(), this.todoList.length);
 
         if (this.prevChoosedFilter != 'all') {
-          this.prevChoosedFilter = this.initFooter.renderClassSelected('all');
-          this.changeListOfNavPages();
+          this.initEventEmitter.emit('chooseFilter', 'all');
         } else {
 
           if (this.todoList.length > (this.navListCounter * this.filterValue)) {
@@ -132,10 +132,9 @@ class App {
   }
 
   changeListOfNavPages = () => {
-    let todos = this.choosedTodoList();
-    let counterOfList = (Math.trunc(todos.length / this.filterValue) + 1);
+    let counterOfList = (Math.trunc(this.filteredTodos.length / this.filterValue) + 1);
 
-    if (todos.length % this.filterValue === 0 && counterOfList !== 1) {
+    if (this.filteredTodos.length % this.filterValue === 0 && counterOfList !== 1) {
       counterOfList--;
     }
 
@@ -144,20 +143,19 @@ class App {
   }
 
   moveToTheNavPage = (index) => {
-    let todos = this.choosedTodoList();
 
-    if (todos.length < (this.navListCounter * this.filterValue) && this.navListCounter !== 1 && todos.length % this.filterValue === 0) {
+    if (this.filteredTodos.length < (this.navListCounter * this.filterValue) && this.navListCounter !== 1 && this.filteredTodos.length % this.filterValue === 0) {
       this.navListCounter--;
     }
 
     this.prevChoosedNav = index;
     this.initNavSection.init(this.prevChoosedNav, this.navListCounter);
 
-    this.initTodoList.render(todos, this.prevChoosedNav);
+    this.initTodoList.render(this.filteredTodos, this.prevChoosedNav);
   }
 
-  eventChangeChecked = (event) => {
-    const div = event.target.closest('div');
+  eventChangeChecked = (evTarg) => {
+    const div = evTarg.closest('div');
     const todoByIndex = this.getTodoById(div.id);
     
     todoByIndex.isChecked = !todoByIndex.isChecked;
@@ -178,13 +176,13 @@ class App {
 
     if (this.prevChoosedFilter !== 'all') {
       setTimeout(() => {
-        let li = event.target.closest('li');
+        let li = evTarg.closest('li');
         li.remove();
 
         if (this.prevChoosedNav !== this.navListCounter){
           this.moveToTheNavPage(this.prevChoosedNav);
         } else {
-          if (this.choosedTodoList().length < (this.navListCounter * this.filterValue) && this.navListCounter !== 1 && this.choosedTodoList().length % this.filterValue === 0) {
+          if (this.filteredTodos.length < (this.navListCounter * this.filterValue) && this.navListCounter !== 1 && this.filteredTodos.length % this.filterValue === 0) {
             this.changeListOfNavPages();
           }
         }
@@ -218,25 +216,10 @@ class App {
     this.initFooter.init(this.getCountOfNotChechedTodos(), this.todoList.length);
   }
 
-  eventClickOnFilter = (event) => {
-    const elem = event.target;
-    const id = elem.id;
-
-    this.prevChoosedFilter = this.initFooter.renderClassSelected(id);
-    this.changeListOfNavPages();
-    this.initEventEmitter.emit(this.prevChoosedFilter, 13212);
-    console.log(2, this.todoList);
-  }
-
-  eventClickOnNavPage = (event) => {
-    const id = parseInt(event.target.id);
-    this.moveToTheNavPage(id);
-  }
-
-  eventRemoveTodo = (event) => {
-    let div = event.target.parentNode;
+  eventRemoveTodo = (evTarg) => {
+    let div = evTarg.parentNode;
     this.todoList = this.todoList.filter(todo => todo.id !== parseInt(div.id));
-    let li = event.target.closest('li');
+    let li = evTarg.closest('li');
     li.remove();
 
     this.initFooter.init(this.getCountOfNotChechedTodos(), this.todoList.length);
@@ -250,7 +233,7 @@ class App {
     if (this.prevChoosedNav !== this.navListCounter){
       this.moveToTheNavPage(this.prevChoosedNav);
     } else {
-      if (this.choosedTodoList().length < (this.navListCounter * this.filterValue) && this.navListCounter !== 1 && this.choosedTodoList().length % this.filterValue === 0) {
+      if (this.filteredTodos.length < (this.navListCounter * this.filterValue) && this.navListCounter !== 1 && this.filteredTodos.length % this.filterValue === 0) {
         this.changeListOfNavPages();
       }
     }
@@ -262,23 +245,6 @@ class App {
 
     this.initHeader.changeHeaderCheckbox(false);
     this.initFooter.init(this.getCountOfNotChechedTodos(), this.todoList.length);
-  }
-
-  choosedTodoList = () => {
-    let todos;
-
-    switch(this.prevChoosedFilter) {
-      case 'all': 
-        todos = this.todoList;
-        break;
-      case 'active':
-        todos = this.todoList.filter(todo => !todo.isChecked);
-        break;
-      case 'complited':
-        todos = this.todoList.filter(todo => todo.isChecked);
-        break;
-    }
-    return todos;
   }
 
   getCountOfNotChechedTodos = () => {
@@ -318,6 +284,34 @@ class App {
     this.container.appendChild(this.sectionNavigation);
     this.container.appendChild(this.footer);
     
+    this.initEventEmitter.subscribe('changeHeaderCheckbox', (event) => {this.eventChangeCheckedForAll(event)});
+    this.initEventEmitter.subscribe('addTodo', (event) => {this.eventAddTodo(event)});
+
+    this.initEventEmitter.subscribe('changeTodoCheckbox', (evTarg) => {this.eventChangeChecked(evTarg)})
+    this.initEventEmitter.subscribe('changeTodoName', (elem) => {this.eventChangeTodo(elem)});
+    this.initEventEmitter.subscribe('removeTodo', (evTarg) => {this.eventRemoveTodo(evTarg)})
+
+    this.initEventEmitter.subscribe('clickOnNavEl', (id) => {this.moveToTheNavPage(id)});
+
+    this.initEventEmitter.subscribe('chooseFilter', (id) => {
+      this.prevChoosedFilter = id;
+    
+      switch(id) {
+        case 'all': 
+          this.filteredTodos = this.todoList;
+          break;
+        case 'active':
+          this.filteredTodos = this.todoList.filter(todo => !todo.isChecked);
+          break;
+        case 'complited':
+          this.filteredTodos = this.todoList.filter(todo => todo.isChecked);
+          break;
+      }
+      this.changeListOfNavPages();
+    });
+
+    this.initEventEmitter.subscribe('delAllChoosed', () => {this.eventRemoveAllChecked()});
+
     this.render();
   }
 }

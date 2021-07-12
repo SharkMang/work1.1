@@ -1,8 +1,8 @@
 class Footer {
-  constructor(footer, handlerClickFilter, handlerClearButton) {
+  constructor(footer, initEE) {
     this.footer = footer;
 
-    this.handlerClickOnLi = handlerClickFilter;
+    this.initEE = initEE;
 
     this.span = document.createElement('span');
     this.ul = document.createElement('ul');
@@ -17,10 +17,10 @@ class Footer {
 
     this.buttonDel.innerHTML = 'Clear complited';
 
-    this.liAll.addEventListener('click', this.handlerClickOnLi);
-    this.liActive.addEventListener('click', this.handlerClickOnLi);
-    this.liComplited.addEventListener('click', this.handlerClickOnLi);
-    this.buttonDel.addEventListener('click', this.handlerClearButton);
+    this.liAll.addEventListener('click', (event) => {this.initEE.emit('chooseFilter', 'all')});
+    this.liActive.addEventListener('click', (event) => {this.initEE.emit('chooseFilter', 'active')});
+    this.liComplited.addEventListener('click', (event) => {this.initEE.emit('chooseFilter', 'complited')});
+    this.buttonDel.addEventListener('click', () => {this.initEE.emit('delAllChoosed', )});
 
     this.liAll.id = 'all';
     this.liActive.id = 'active';
@@ -44,12 +44,9 @@ class Footer {
     this.footer.appendChild(this.span);
     this.footer.appendChild(this.ul);
 
-    this.init(index, index);
-  }
+    this.initEE.subscribe('chooseFilter', (id) => {this.renderClassSelected(id)});
 
-  removeClassSelected = (id) => {
-    const elem = document.getElementById(id)
-    elem.classList.remove('selected');
+    this.init(index, index);
   }
 
   init(todosCounter, todosLength) {
@@ -62,12 +59,12 @@ class Footer {
     }
   }
 
-
   renderClassSelected = (choosedFilter) => {
     if (choosedFilter !== this.prevChoosedFilter) {
-      const elem = document.getElementById(choosedFilter);
-      this.removeClassSelected(this.prevChoosedFilter);
-      elem.classList.add('selected');
+      const elemChoosed = document.getElementById(choosedFilter);
+      const elemPrevChoosed = document.getElementById(this.prevChoosedFilter)
+      elemPrevChoosed.classList.remove('selected');
+      elemChoosed.classList.add('selected');
       this.prevChoosedFilter = choosedFilter;
     }
 
