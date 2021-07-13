@@ -1,5 +1,10 @@
-class App {
-  constructor(selector) {
+import Header from '../src/components/headerInput.js';
+import TodoList from '../src/components/todoList.js';
+import Navigator from '../src/components/navigator.js';
+import Footer from '../src/components/footer.js';
+
+export default class Home {
+  constructor(selector, initEE) {
     this.container = document.getElementById(selector);
     this.header = document.createElement('header');
     this.sectionNavigation = document.createElement('section');
@@ -29,13 +34,12 @@ class App {
     this.prevChoosedNav = this.navListCounter;
     this.prevChoosedFilter = 'all';
 
-    this.initEventEmitter = new EventEmitter();
+    this.initEventEmitter = initEE;
 
     this.initHeader = new Header(this.header, this.initEventEmitter);
     this.initTodoList = new TodoList(this.filterValue, this.sectionTodoList, this.initEventEmitter);
     this.initNavSection = new Navigator(this.sectionNavigation, this.initEventEmitter);
     this.initFooter = new Footer(this.footer, this.initEventEmitter);
-    
   }
   
   render() {
@@ -295,11 +299,21 @@ class App {
     h1.classList.add('h1');
     this.header.appendChild(h1);
 
+    const div = document.createElement('div');
+    const btnLogout = document.createElement('button');
+    btnLogout.innerHTML = 'Logout';
+    btnLogout.classList.add('loginLogoutBtn');
+    btnLogout.addEventListener('click', () => {
+      this.initEventEmitter.emit('isAuthenticated', false);
+    });
+    div.appendChild(btnLogout);
+
     this.container.appendChild(this.header);
     this.container.appendChild(this.sectionTodoList);
     this.container.appendChild(this.sectionNavigation);
     this.container.appendChild(this.footer);
-    
+    this.container.appendChild(div);
+   
     this.initEventEmitter.subscribe('changeHeaderCheckbox', (event) => {this.eventChangeCheckedForAll(event)});
     this.initEventEmitter.subscribe('addTodo', (event) => {this.eventAddTodo(event)});
 
@@ -320,6 +334,4 @@ class App {
   }
 }
 
-window.onload = function() {
-  (new App('root')).init();
-}
+
