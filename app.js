@@ -6,25 +6,25 @@ class App {
   constructor(selector) {
     this.container = document.getElementById(selector);
 
-    this.initEventEmitter = new EventEmitter();
+    this.eventEmitter = new EventEmitter();
 
-    this.initLogin = new Login(selector, this.initEventEmitter);
-    this.initHome = new Home(selector, this.initEventEmitter);
+    this.loginPage = new Login(selector, this.eventEmitter);
+    this.homePage = new Home(selector, this.eventEmitter);
     
   }
 
   init() {
-    this.initEventEmitter.subscribe('isAuthenticated', (value) => {
+    this.eventEmitter.subscribe('isAuthenticated', (value) => {
       if (value) {
         localStorage.setItem('isAuthenticated', true);
-        this.render(this.initHome);
+        this.render(this.homePage);
       } else {
         localStorage.setItem('isAuthenticated', false);
-        this.render(this.initLogin);
+        this.render(this.loginPage);
       }
     });
 
-    this.render(this.initLogin);
+    this.render(this.loginPage);
   }
 
   render(page) {

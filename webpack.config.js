@@ -1,7 +1,8 @@
 const path = require('path');
+const { HotModuleReplacementPlugin } = require('webpack');
 
 module.exports = {
-  watch: true,
+  //watch: true,
   mode: 'development',
   entry: './app.js',
   module: {
@@ -12,7 +13,16 @@ module.exports = {
     ]
   },
   output: {
-    path: path.resolve(__dirname, 'public'),
+    path: path.resolve(__dirname, './build'),
     filename: 'bundle.js',
   },
+  devServer: {
+    historyApiFallback: true,
+    contentBase: path.resolve(__dirname, './build'),
+    open: true,
+    compress: true,
+    hot: true,
+    port: 8080,
+    disableHostCheck: true
+  }
 };
