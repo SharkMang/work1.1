@@ -1,5 +1,5 @@
 class Home {
-  constructor(selector, init) {
+  constructor(selector, initEE) {
     this.container = document.getElementById(selector);
     this.header = document.createElement('header');
     this.sectionNavigation = document.createElement('section');
@@ -29,14 +29,12 @@ class Home {
     this.prevChoosedNav = this.navListCounter;
     this.prevChoosedFilter = 'all';
 
-    this.initEventEmitter = new EventEmitter();
+    this.initEventEmitter = initEE;
 
     this.initHeader = new Header(this.header, this.initEventEmitter);
     this.initTodoList = new TodoList(this.filterValue, this.sectionTodoList, this.initEventEmitter);
     this.initNavSection = new Navigator(this.sectionNavigation, this.initEventEmitter);
     this.initFooter = new Footer(this.footer, this.initEventEmitter);
-    
-    this.initApp = init;
   }
   
   render() {
@@ -300,9 +298,8 @@ class Home {
     const btnLogout = document.createElement('button');
     btnLogout.innerHTML = 'Logout';
     btnLogout.classList.add('loginLogoutBtn');
-    btnLogout.addEventListener('click', (event) => {
-      localStorage.setItem('isAuthenticated', false);
-      this.initApp();
+    btnLogout.addEventListener('click', () => {
+      this.initEventEmitter.emit('isAuthenticated', false);
     });
     div.appendChild(btnLogout);
 

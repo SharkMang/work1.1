@@ -1,5 +1,5 @@
 class Login {
-  constructor(selector, init) {
+  constructor(selector, initEE) {
     this.container = document.getElementById(selector);
     this.header = document.createElement('header');
 
@@ -51,7 +51,7 @@ class Login {
       },
     ];
 
-    this.initApp = init;
+    this.initEE = initEE;
   }
 
   init() {
@@ -74,9 +74,7 @@ class Login {
     this.inputPassword.value = '';
 
     if (this.checkInputIsCorrect(user)) {
-      localStorage.setItem('isAuthenticated', true);
-      this.initApp();
-
+      this.initEE.emit('isAuthenticated', true);
     } else {
       localStorage.setItem('isAuthenticated', false);
 

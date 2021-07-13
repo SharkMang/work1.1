@@ -2,18 +2,30 @@ class App {
   constructor(selector) {
     this.container = document.getElementById(selector);
 
-    this.initLogin = new Login(selector, this.init);
-    this.initHome = new Home(selector, this.init);
+    this.initEventEmitter = new EventEmitter();
+
+    this.initLogin = new Login(selector, this.initEventEmitter);
+    this.initHome = new Home(selector, this.initEventEmitter);
+    
   }
 
-  init = () => {
-    this.container.innerHTML = '';
+  init() {
+    this.initEventEmitter.subscribe('isAuthenticated', (value) => {
+      if (value) {
+        localStorage.setItem('isAuthenticated', true);
+        this.render(this.initHome);
+      } else {
+        localStorage.setItem('isAuthenticated', false);
+        this.render(this.initLogin);
+      }
+    });
 
-    if (localStorage.getItem('isAuthenticated') === 'true') {
-      this.initHome.init();
-    } else {
-      this.initLogin.init();
-    }
+    this.render(this.initLogin);
+  }
+
+  render(page) {
+    this.container.innerHTML = '';
+    page.init();
   }
 }
 
