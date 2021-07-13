@@ -1,0 +1,23 @@
+{
+  "name": "work1.1",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SharkMang/work1.1.git"
+  },
+  "author": "SharkMang",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SharkMang/work1.1/issues"
+  },
+  "homepage": "https://github.com/SharkMang/work1.1#readme",
+  "devDependencies": {
+    "webpack": "^5.44.0",
+    "webpack-cli": "^4.7.2"
+  }
+}
