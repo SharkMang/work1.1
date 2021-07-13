@@ -1,10 +1,7 @@
 class TodoList {
-  constructor(filterValue, container, handleChackbox, handleDbclickButton, handleDelButton) {
+  constructor(filterValue, container, initEE) {
     this.container = container;
-
-    this.handleChackbox = handleChackbox;
-    this.handleDbclickButton = handleDbclickButton;
-    this.handleDelButton = handleDelButton;
+    this.initEE = initEE;
 
     this.ul = document.createElement('ul');
     this.ul.classList.add('ulSection');
@@ -38,11 +35,11 @@ class TodoList {
     checkBox.type = 'checkbox';
     checkBox.classList.add('liCheckbox');
     checkBox.checked = elem.isChecked;
-    checkBox.addEventListener('change', this.handleChackbox);
+    checkBox.addEventListener('change', (event) => {this.initEE.emit('changeTodoCheckbox', event.target)});
         
     const label = document.createElement('label');
     label.innerHTML = elem.todoName;
-    label.addEventListener('dblclick', this.handleDbclickButton);
+    label.addEventListener('dblclick', (event) => {this.initEE.emit('changeTodoName', event.target)});
 
     if (elem.isChecked) {
       label.classList.add('label-item-marced');
@@ -53,7 +50,7 @@ class TodoList {
     const buttonDel = document.createElement('button');
     buttonDel.innerHTML = 'X';
     buttonDel.className = 'buttonDel';
-    buttonDel.addEventListener('click', this.handleDelButton);
+    buttonDel.addEventListener('click', (event) => {this.initEE.emit('removeTodo', event.target)});
 
     div.appendChild(checkBox);
     div.appendChild(label);
