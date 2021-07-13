@@ -1,5 +1,5 @@
 class Login {
-  constructor(selector) {
+  constructor(selector, init) {
     this.container = document.getElementById(selector);
     this.header = document.createElement('header');
 
@@ -11,6 +11,7 @@ class Login {
     this.header.appendChild(h1);
     
     this.formLogin = document.createElement('form');
+    this.formLogin.classList.add('loginForm');
 
     this.inputEmail = document.createElement('input');
     this.inputEmail.classList.add('loginInputs');
@@ -31,12 +32,13 @@ class Login {
     this.inputSubmit.name = 'send';
     this.inputSubmit.type = 'submit';
     this.inputSubmit.addEventListener('click', this.eventEnterLogin);
+    this.inputSubmit.classList.add('loginLogoutBtn');
     this.formLogin.appendChild(this.inputSubmit);
 
     this.users = [
       {
-        email:'email1@gmail.com',
-        password: 'password1'
+        email:'em@gmail.com',
+        password: 'pw1'
       },{
         email: 'email2@gmail.com',
         password: 'password2'
@@ -48,10 +50,8 @@ class Login {
         password: 'password4'
       },
     ];
-  }
 
-  render() {
-
+    this.initApp = init;
   }
 
   init() {
@@ -70,20 +70,19 @@ class Login {
       password: formData.get('password')
     };
 
+    this.inputEmail.value = '';
+    this.inputPassword.value = '';
+
     if (this.checkInputIsCorrect(user)) {
-      document.cookie = 'isAuthenticated=true;';
+      localStorage.setItem('isAuthenticated', true);
+      this.initApp();
 
-      this.container.innerHTML = '';
-      (new Home('root')).init();
     } else {
-      document.cookie = 'isAuthenticated=false;';
+      localStorage.setItem('isAuthenticated', false);
 
-      this.inputEmail.value = '';
       this.inputEmail.placeholder = 'InCorrect Email.';
-      this.inputEmail.focus();
-
-      this.inputPassword.value = '';
       this.inputPassword.placeholder = 'Incorrect Password.';
+      this.inputEmail.focus();
     }
   }
 

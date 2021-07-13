@@ -1,17 +1,20 @@
 class App {
   constructor(selector) {
     this.container = document.getElementById(selector);
-    //document.cookie = 'isAuthenticated=false;';
+
+    this.initLogin = new Login(selector, this.init);
+    this.initHome = new Home(selector, this.init);
   }
 
-  init() {
-    document.cookie = "name=user"; 
-    document.cookie = "fullname=Ivanov";
-    document.cookie = "date=10.01.2021";
-     
-    alert(document.cookie);
-  }
+  init = () => {
+    this.container.innerHTML = '';
 
+    if (localStorage.getItem('isAuthenticated') === 'true') {
+      this.initHome.init();
+    } else {
+      this.initLogin.init();
+    }
+  }
 }
 
 window.onload = function() {
