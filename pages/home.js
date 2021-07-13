@@ -1,5 +1,5 @@
-class App {
-  constructor(selector) {
+class Home {
+  constructor(selector, init) {
     this.container = document.getElementById(selector);
     this.header = document.createElement('header');
     this.sectionNavigation = document.createElement('section');
@@ -36,6 +36,7 @@ class App {
     this.initNavSection = new Navigator(this.sectionNavigation, this.initEventEmitter);
     this.initFooter = new Footer(this.footer, this.initEventEmitter);
     
+    this.initApp = init;
   }
   
   render() {
@@ -295,11 +296,22 @@ class App {
     h1.classList.add('h1');
     this.header.appendChild(h1);
 
+    const div = document.createElement('div');
+    const btnLogout = document.createElement('button');
+    btnLogout.innerHTML = 'Logout';
+    btnLogout.classList.add('loginLogoutBtn');
+    btnLogout.addEventListener('click', (event) => {
+      localStorage.setItem('isAuthenticated', false);
+      this.initApp();
+    });
+    div.appendChild(btnLogout);
+
     this.container.appendChild(this.header);
     this.container.appendChild(this.sectionTodoList);
     this.container.appendChild(this.sectionNavigation);
     this.container.appendChild(this.footer);
-    
+    this.container.appendChild(div);
+   
     this.initEventEmitter.subscribe('changeHeaderCheckbox', (event) => {this.eventChangeCheckedForAll(event)});
     this.initEventEmitter.subscribe('addTodo', (event) => {this.eventAddTodo(event)});
 
@@ -320,6 +332,4 @@ class App {
   }
 }
 
-window.onload = function() {
-  (new App('root')).init();
-}
+

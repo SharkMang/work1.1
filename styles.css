@@ -20,7 +20,6 @@ body{
   box-shadow: 0 2px 4px 0 rgb(0 0 0 / 20%), 0 25px 50px 0 rgb(0 0 0 / 10%);
 }
 
-
 .header{
   margin-top: 10rem;
   font-style:oblique;
@@ -207,4 +206,41 @@ body{
 
 .selected{
   border-color: rgba(34, 83, 105, 0.2);
+}
+
+.loginForm{
+  padding: 18px 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.loginInputs{
+  padding: 15px;
+  margin-bottom: 8px;
+  display: inline-block;
+  border: none;
+  background: #f1f1f1;
+
+  font-size: 22px;
+  font-family: inherit;
+  font-weight: inherit;
+}
+
+.loginInputs:focus {
+  background-color: #ddd;
+  outline: none;
+}
+
+.loginLogoutBtn{
+  background-color: rgba(175, 47, 47, 0.6);
+  color: white;
+  padding: 14px 18px;
+  border: none;
+  cursor: pointer;
+  opacity: 0.9;
+  font-size: 22px;
+  width: 100%;
+}
+.loginLogoutBtn:hover {
+  opacity:1;
 }
