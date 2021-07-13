@@ -1,4 +1,4 @@
-class Footer {
+export default class Footer {
   constructor(footer, initEE) {
     this.footer = footer;
 

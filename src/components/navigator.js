@@ -1,4 +1,4 @@
-class Navigator {
+export default class Navigator {
   constructor(container, initEE) {
     this.container = container;
 

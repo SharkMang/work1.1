@@ -1,4 +1,4 @@
-class TodoList {
+export default class TodoList {
   constructor(filterValue, container, initEE) {
     this.container = container;
     this.initEE = initEE;

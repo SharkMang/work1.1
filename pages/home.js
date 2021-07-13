@@ -1,4 +1,9 @@
-class Home {
+import Header from '../src/components/headerInput.js';
+import TodoList from '../src/components/todoList.js';
+import Navigator from '../src/components/navigator.js';
+import Footer from '../src/components/footer.js';
+
+export default class Home {
   constructor(selector, initEE) {
     this.container = document.getElementById(selector);
     this.header = document.createElement('header');

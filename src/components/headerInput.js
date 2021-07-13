@@ -1,4 +1,4 @@
-class Header {
+export default class Header {
   constructor(container, initEE) {
     this.container = container;
     this.initEE = initEE;

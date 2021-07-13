@@ -1,3 +1,7 @@
+import Home from './pages/home.js';
+import Login from './pages/login.js';
+import EventEmitter from './src/components/eventEmitter.js';
+
 class App {
   constructor(selector) {
     this.container = document.getElementById(selector);

@@ -1,4 +1,4 @@
-class Login {
+export default class Login {
   constructor(selector, initEE) {
     this.container = document.getElementById(selector);
     this.header = document.createElement('header');
