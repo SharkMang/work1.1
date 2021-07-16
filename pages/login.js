@@ -1,39 +1,8 @@
-export default class Login {
-  constructor(selector, initEE) {
-    this.container = document.getElementById(selector);
-    this.header = document.createElement('header');
+import React from "react";
 
-    this.container.classList.add('container');
-
-    const h1 = document.createElement('h1');
-    h1.classList.add('h1');
-    h1.innerHTML = 'LogIn:';
-    this.header.appendChild(h1);
-    
-    this.formLogin = document.createElement('form');
-    this.formLogin.classList.add('loginForm');
-
-    this.inputEmail = document.createElement('input');
-    this.inputEmail.classList.add('loginInputs');
-    this.inputEmail.type = 'email';
-    this.inputEmail.name = 'email';
-    this.inputEmail.placeholder = 'Email';
-    this.formLogin.appendChild(this.inputEmail);
-
-    this.inputPassword = document.createElement('input');
-    this.inputPassword.classList.add('loginInputs');
-    this.inputPassword.type = 'password';
-    this.inputPassword.name = 'password';
-    this.inputPassword.placeholder = 'Password';
-    this.formLogin.appendChild(this.inputPassword);
-
-    this.inputSubmit = document.createElement('input');
-    this.inputSubmit.value = 'Login';
-    this.inputSubmit.name = 'send';
-    this.inputSubmit.type = 'submit';
-    this.inputSubmit.addEventListener('click', this.eventEnterLogin);
-    this.inputSubmit.classList.add('loginLogoutBtn');
-    this.formLogin.appendChild(this.inputSubmit);
+class Login extends React.Component {
+  constructor(props) {
+    super(props);
 
     this.users = [
       {
@@ -50,13 +19,21 @@ export default class Login {
         password: 'password4'
       },
     ];
-
-    this.initEE = initEE;
   }
 
-  init() {
-    this.container.appendChild(this.header);
-    this.container.appendChild(this.formLogin);
+  render() {
+    return (
+      <div>
+        <header className='header'>
+          <h1 className='h1'>LogIn:</h1>
+        </header>
+        <form className='loginForm'>
+          <input className='loginInputs' type='email' name='email' placeholder='Email'/>
+          <input className='loginInputs' type='password' name='password' placeholder='password'/>
+          <input className='loginLogoutBtn' type='submit' name='send' value='Login' onClick={this.eventEnterLogin}/>
+        </form>
+      </div>
+    );
   }
 
   eventEnterLogin = (event) => {
@@ -65,22 +42,26 @@ export default class Login {
     let form = event.target.closest("form");
     let formData = new FormData(form);
 
+    let inputEmail = form.childNodes[0];
+    let inputPassword = form.childNodes[1];
+
     let user = {
       email: formData.get('email'),
       password: formData.get('password')
     };
 
-    this.inputEmail.value = '';
-    this.inputPassword.value = '';
+    inputEmail.value = '';
+    inputPassword.value = '';
 
     if (this.checkInputIsCorrect(user)) {
-      this.initEE.emit('isAuthenticated', true);
+      localStorage.setItem('isAuthenticated', true);
+      window.location.reload();
     } else {
       localStorage.setItem('isAuthenticated', false);
 
-      this.inputEmail.placeholder = 'InCorrect Email.';
-      this.inputPassword.placeholder = 'Incorrect Password.';
-      this.inputEmail.focus();
+      inputEmail.placeholder = 'InCorrect Email.';
+      inputPassword.placeholder = 'Incorrect Password.';
+      inputEmail.focus();
     }
   }
 
@@ -99,3 +80,4 @@ export default class Login {
   }
 }
 
+export default Login;

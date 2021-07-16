@@ -1,38 +1,56 @@
-export default class Navigator {
-  constructor(container, initEE) {
-    this.container = container;
+import React from "react";
+import NavItem from "./navItem";
 
-    this.initEE = initEE;
+export default class Navigator extends React.Component {
+  constructor(props) {
+    super(props);
 
-    this.ul = document.createElement('ul');
-    this.ul.classList.add('ulNavSection');
+    this.initEE = props.EE;
 
-    this.prevChoosedNav = 0;
-    this.countOfPages = 0;
+    // this.prevChoosedNav = 0;
+    // this.countOfPages = this.props.totalPages;
   }
 
-  render(totalPages) {
-    this.ul.innerHTML = '';
+  render() {
+    let navList = [];
+    const totalPages = this.props.totalPages;
+    
+      for(let i = 1; i <= totalPages; i++) {
+        navList.push(<NavItem EE={this.initEE} key={i} value={i}/>);
+      }
+      
+      if (totalPages > 1) {
+        return (
+          <section>
+            <ul className='ulNavSection'>
+              {navList}
+            </ul>
+          </section>
+        );
+      } else {
+        return <></>;
+      }
+     
 
-    for(let i = 1; i <= totalPages; i++) {
-      const li = document.createElement('li');
+    // for(let i = 1; i <= totalPages; i++) {
+    //   const li = document.createElement('li');
 
-      li.id = i;
-      li.classList.add('liNavSection');
-      li.addEventListener('click', (event) => {this.initEE.emit('clickOnNavEl', parseInt(event.target.id))});
-      li.innerHTML = `${i} page.`;
+    //   li.id = i;
+    //   li.classList.add('liNavSection');
+    //   li.addEventListener('click', (event) => {this.initEE.emit('clickOnNavEl', parseInt(event.target.id))});
+    //   li.innerHTML = `${i} page.`;
 
-      this.ul.appendChild(li);
-    }
+    //   this.ul.appendChild(li);
+    // }
 
-    if (totalPages > 1) {
-      this.container.appendChild(this.ul);
-      this.ul.lastChild.classList.add('selected');
-    } else {
-      this.ul.remove();
-    }
+    // if (totalPages > 1) {
+    //   this.container.appendChild(this.ul);
+    //   this.ul.lastChild.classList.add('selected');
+    // } else {
+    //   this.ul.remove();
+    // }
 
-    this.prevChoosedNav = totalPages;
+    // this.prevChoosedNav = totalPages;
   }
 
   renderClassSelected = (idElem) => {
@@ -45,13 +63,13 @@ export default class Navigator {
     }
   }
 
-  init(currentPage, totalPages) {
-    if (this.countOfPages !== totalPages) {
-      this.render(totalPages);
-    }
+  // init(currentPage, totalPages) {
+  //   if (this.countOfPages !== totalPages) {
+  //     this.render(totalPages);
+  //   }
 
-    if (currentPage !== this.prevChoosedNav) {
-      this.renderClassSelected(currentPage);
-    }
-  }
+  //   if (currentPage !== this.prevChoosedNav) {
+  //     this.renderClassSelected(currentPage);
+  //   }
+  // }
 }

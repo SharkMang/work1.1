@@ -1,30 +1,43 @@
-export default class Header {
-  constructor(container, initEE) {
-    this.container = container;
-    this.initEE = initEE;
+import React from "react";
 
-    this.checkBoxAll = document.createElement('input');
-    this.checkBoxAll.type = 'checkbox';
-    this.checkBoxAll.classList.add('headerChackBox');
-    this.checkBoxAll.addEventListener('change', (event) => {this.initEE.emit('changeHeaderCheckbox', event)});
+class Header extends React.Component {
+  constructor(props) {
+    super(props);
+    this.props.EE.subscribe('changeHeaderCheckbox', (value) => {
+      document.getElementById('headerChackBox').checked = value;
+    });
 
-    this.input = document.createElement('input');
-    this.input.type = 'text';
-    this.input.className = 'headerInput';
-    this.input.placeholder = 'What needs to be done?';
-    this.input.addEventListener('keydown', (event) => {this.initEE.emit('addTodo', event)});
-    this.input.addEventListener("blur", (event) => {
-      event.target.value = '';
-      event.target.placeholder = 'What needs to be done?';
+    this.props.EE.subscribe('visibleHeaderCheckBox', (value) => {
+      if (value) {
+        document.getElementById('headerChackBox').classList.add('notActive')
+      } else {
+        document.getElementById('headerChackBox').classList.remove('notActive')
+      }
+      
     });
   }
 
   render() {
-    this.container.appendChild(this.checkBoxAll);
-    this.container.appendChild(this.input);
-  }
-
-  changeHeaderCheckbox(value) {
-    this.checkBoxAll.checked = value;
+  
+    return (
+      <header className='header'>
+        <h1 className='h1'>
+          Todos
+        </h1>
+        <input id='headerChackBox' className='headerChackBox' type='checkbox' onChange={(event) => {this.props.EE.emit('clickOnHeaderCheckbox', event)}}/>
+        <input 
+          className='headerInput' 
+          type='text' 
+          placeholder='What needs to be done?' 
+          onKeyDown={(event) => {this.props.EE.emit('addTodo', event)}}
+          onBlur={(event) => {
+            event.target.value = '';
+            event.target.placeholder = 'What needs to be done?';
+          }}
+        />
+      </header>
+    );
   }
 }
+
+export default Header;

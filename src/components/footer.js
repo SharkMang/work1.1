@@ -1,62 +1,53 @@
-export default class Footer {
-  constructor(footer, initEE) {
-    this.footer = footer;
+import React from "react";
 
-    this.initEE = initEE;
-
-    this.span = document.createElement('span');
-    this.ul = document.createElement('ul');
-    this.liAll = document.createElement('li');
-    this.liActive = document.createElement('li');
-    this.liComplited = document.createElement('li');
-    this.buttonDel = document.createElement('button');
-
-    this.liAll.innerHTML = 'All';
-    this.liActive.innerHTML = 'Active';
-    this.liComplited.innerHTML = 'Complited';
-
-    this.buttonDel.innerHTML = 'Clear complited';
-
-    this.liAll.addEventListener('click', (event) => {this.initEE.emit('chooseFilter', 'all')});
-    this.liActive.addEventListener('click', (event) => {this.initEE.emit('chooseFilter', 'active')});
-    this.liComplited.addEventListener('click', (event) => {this.initEE.emit('chooseFilter', 'complited')});
-    this.buttonDel.addEventListener('click', () => {this.initEE.emit('delAllChoosed', )});
-
-    this.liAll.id = 'all';
-    this.liActive.id = 'active';
-    this.liComplited.id = 'complited';
-
-    this.ul.classList.add('ulFooter');
-    this.liAll.classList.add('liFooter');
-    this.liActive.classList.add('liFooter');
-    this.liComplited.classList.add('liFooter');
-    this.buttonDel.classList.add('buttonDelFooter');
-
-    this.ul.appendChild(this.liAll);
-    this.ul.appendChild(this.liActive);
-    this.ul.appendChild(this.liComplited);
+export default class Footer extends React.Component {
+  constructor(props) {
+    super(props);
 
     this.prevChoosedFilter = 'all';
+
+    this.props.EE.subscribe('chooseFilter', (id) => {this.renderClassSelected(id)});
+    this.props.EE.subscribe('changeCountActiveTodo', (value) => {
+      let [todosCounter, todosLength] = value;
+      document.getElementById('span').innerHTML = `${todosCounter} items left.`;
+
+      const delButton = document.getElementById('buttonDelFooter');
+
+      if (todosCounter < todosLength){
+        delButton.classList.remove('notActive')
+      } else {
+        delButton.classList.add('notActive')
+      }
+
+      if (todosCounter === 0 && todosLength !== 0) {
+        this.props.EE.emit('changeHeaderCheckbox', true);
+      } else {
+        this.props.EE.emit('changeHeaderCheckbox', false);
+      }
+
+      if (todosLength === 0) {
+        this.props.EE.emit('visibleHeaderCheckBox', true);
+      } else {
+        this.props.EE.emit('visibleHeaderCheckBox', false);
+      }
+    });
   }
 
-  render(index) {
-    this.liAll.classList.add('selected');
-    this.footer.appendChild(this.span);
-    this.footer.appendChild(this.ul);
+  render() {
 
-    this.initEE.subscribe('chooseFilter', (id) => {this.renderClassSelected(id)});
-
-    this.init(index, index);
-  }
-
-  init(todosCounter, todosLength) {
-    this.span.innerHTML = `${todosCounter} items left.`;
-
-    if (todosCounter < todosLength){
-      this.footer.appendChild(this.buttonDel);
-    } else {
-      this.buttonDel.remove();
-    }
+    return (
+      <footer className='footer'>
+        <span id='span'>
+          2 items left.
+        </span>
+        <ul className='ulFooter'>
+          <li id='all' className='liFooter selected' onClick={() => {this.props.EE.emit('chooseFilter', 'all')}}>All</li>
+          <li id='active' className='liFooter' onClick={() => {this.props.EE.emit('chooseFilter', 'active')}}>Active</li>
+          <li id='complited' className='liFooter' onClick={() => {this.props.EE.emit('chooseFilter', 'complited')}}>Complited</li>
+        </ul>
+        <button id='buttonDelFooter' className='buttonDelFooter notActive' onClick={() => {this.props.EE.emit('delAllChoosed', )}}>Clear complited</button>
+      </footer>
+    );
   }
 
   renderClassSelected = (choosedFilter) => {
@@ -67,7 +58,5 @@ export default class Footer {
       elemChoosed.classList.add('selected');
       this.prevChoosedFilter = choosedFilter;
     }
-
-    return this.prevChoosedFilter;
   }
 }
