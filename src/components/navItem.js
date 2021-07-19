@@ -9,7 +9,7 @@ export default class NavItem extends React.Component {
 
   render() {
     return (
-      <li id={this.props.value} className='liNavSection'
+      <li id={this.props.value} className={this.props.classList.join(' ')}
         onClick={(event) => {this.initEE.emit('clickOnNavEl', parseInt(event.target.id))}}>
         {this.props.value} page
       </li>

@@ -1,11 +1,13 @@
 import React from "react";
 import ReactDOM from "react-dom";
+
 import {Route, Router} from "react-router";
-import '../build/styles.css';
 import browserHistory from 'history';
 
 import Login from '../pages/login.js';
 import Home from '../pages/home.js';
+
+import '../build/styles.css';
 
 
 class App extends React.Component {
@@ -13,8 +15,6 @@ class App extends React.Component {
     super(props);
     this.conteiner = document.getElementById(props.conteiner);
   }
-
-
 
   render() {
     this.conteiner.innerHTML = '';
@@ -26,9 +26,6 @@ class App extends React.Component {
     }
   }
 }
-
-
-
 
 ReactDOM.render(
   // <Router history={browserHistory}>

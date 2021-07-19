@@ -8,7 +8,7 @@ import EventEmitter from '../src/components/eventEmitter.js';
 import React from "react";
 import ButtonLogout from '../src/components/buttonLogOut.js';
 
-class Home extends React.Component{
+export default class Home extends React.Component{
   constructor(props) {
     super(props);
     
@@ -26,20 +26,16 @@ class Home extends React.Component{
     ];
 
     this.filterValue = 6;
+    this.navListCounter = (Math.trunc(this.todoList.length / this.filterValue) + 1);
+    this.prevChoosedNav = this.navListCounter;
     this.prevChoosedFilter = 'all';
-    // this.navListCounter = (Math.trunc(this.todoList.length / this.filterValue) + 1);
 
     this.state = {
       todoList: this.todoList,
-      choosedFilter: this.prevChoosedFilter,
+      choosedNav: this.prevChoosedNav,
+      navListCounter: this.navListCounter
     };
 
-
-    
-    // this.navListCounter = (Math.trunc(this.todoList.length / this.filterValue) + 1);
-    // this.prevChoosedNav = this.navListCounter;
-    
-    
     this.eventEmitter = new EventEmitter();
 
     this.eventEmitter.subscribe('clickOnHeaderCheckbox', (event) => {this.eventChangeCheckedForAll(event)});
@@ -49,30 +45,29 @@ class Home extends React.Component{
     this.eventEmitter.subscribe('changeTodoName', (elem) => {this.eventChangeTodo(elem)});
     this.eventEmitter.subscribe('removeTodo', (id) => {this.eventRemoveTodo(id)});
 
-    //this.eventEmitter.subscribe('clickOnNavEl', (id) => {this.moveToTheNavPage(id)});
+    this.eventEmitter.subscribe('clickOnNavEl', (id) => {this.moveToTheNavPage(id)});
 
     this.eventEmitter.subscribe('chooseFilter', (id) => {
-      if (this.state.todoList.length !== 0) {
-        this.setState({
-          choosedFilter: id
-        });
-      }
+      this.prevChoosedFilter = id;
+      this.changeListOfNavPages();
     });
     this.eventEmitter.subscribe('delAllChoosed', () => {this.eventRemoveAllChecked()});
+  
   }
   
   render() {
-    this.eventEmitter.emit('changeCountActiveTodo', [this.getCountOfNotChechedTodos(), this.state.todoList.length]);
+    this.eventEmitter.emit('changeCountActiveTodo', [this.getCountOfNotCheckedTodos(), this.todoList.length]);
 
     return (
       <>
-        <Header EE={this.eventEmitter} addTodo={this.eventAddTodo}/>
+        <Header EE={this.eventEmitter} />
         <TodoList todos={this.state} EE={this.eventEmitter} filterValue={this.filterValue}/>
-        <Navigator EE={this.eventEmitter} totalPages={this.state.navListCounter}/>
-        <Footer todos={this.state} EE={this.eventEmitter}/>
+        <Navigator EE={this.eventEmitter} navList={this.state}/>
+        <Footer EE={this.eventEmitter} notCheckedTodos={this.getCountOfNotCheckedTodos()}/>
         <ButtonLogout />
       </>
     );
+
   }
 
   eventChangeTodo = (elem) => {
@@ -96,19 +91,13 @@ class Home extends React.Component{
     if (event.keyCode === 13) {
 
       if (this.isCorrectInput(event.target.value)) {
-        const newTodoName = event.target.value;
+        const todo = event.target.value;
         
         const div = event.target.closest('div');
-        event.target.removeEventListener('blur', this.eventBlurTodo);
+        const todoByIndex = this.getTodoById(div.id);
+        todoByIndex.todoName = todo;
 
-        this.setState({
-          todoList: this.state.todoList.map( (todo) => {
-            if (todo.id === parseInt(div.id)) {
-              todo.todoName = newTodoName;
-            }
-            return todo;
-          })
-        });
+        this.moveToTheNavPage(this.prevChoosedNav);
       } else {
         event.target.placeholder = 'Incorrect Value';
         event.target.value = '';
@@ -131,196 +120,118 @@ class Home extends React.Component{
           id: Math.round(Math.random() * 10000)
         };
 
-        event.target.value = '';
+        this.todoList.push(newTodo);
+
+        event.target.value = '';  
         event.target.placeholder = 'What needs to be done?';
 
-        this.setState({
-          todoList: this.state.todoList.concat(newTodo),
-        });
-
         this.eventEmitter.emit('chooseFilter', 'all');
-        } else {
+      } else {
         event.target.placeholder = 'Incorrect Value';
         event.target.value = '';
       }
     }
   }
 
+  changeListOfNavPages = () => {
+    let todos = this.choosedTodoList();
+    let counterOfList = (Math.trunc(todos.length / this.filterValue) + 1);
 
+    if (todos.length % this.filterValue === 0 && counterOfList !== 1) {
+      counterOfList--;
+    }
 
+    this.navListCounter = counterOfList;
+    this.moveToTheNavPage(this.navListCounter);
+  }
 
+  moveToTheNavPage = (index) => {
+    let todos = this.choosedTodoList();
+    if (todos.length < (this.navListCounter * this.filterValue) && this.navListCounter !== 1 && todos.length % this.filterValue === 0) {
+      this.navListCounter--;
+    }
+    if (index > this.navListCounter) {
+      this.prevChoosedNav = this.navListCounter;
+    } else {
+      this.prevChoosedNav = index;
+    }
+    
+    this.setState({
+      todoList: todos,
+      choosedNav: this.prevChoosedNav,
+      navListCounter: this.navListCounter
+    });
+  }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // changeListOfNavPages = () => {
-  //   let todos = this.choosedTodoList();
-
-  //   this.setState({
-  //     renderTodos: todos
-  //   });
-  //   // let counterOfList = (Math.trunc(todos.length / this.filterValue) + 1);
-
-  //   // if (todos.length % this.filterValue === 0 && counterOfList !== 1) {
-  //   //   counterOfList--;
-  //   // }
-
-  //   // this.navListCounter = counterOfList;
-  //   // this.moveToTheNavPage(this.navListCounter);
-  // }
-
-  // moveToTheNavPage = (index) => {
-  //   let todos = this.choosedTodoList();
-  //   this.setState({
-  //     renderTodos: todos
-  //   });
-  //   // if (todos.length < (this.navListCounter * this.filterValue) && this.navListCounter !== 1 && todos.length % this.filterValue === 0) {
-  //   //   this.navListCounter--;
-  //   // }
-
-  //   // this.prevChoosedNav = index;
-  //   // this.initNavSection.init(this.prevChoosedNav, this.navListCounter);
-
-  //   // this.initTodoList.render(todos, this.prevChoosedNav);
-  // }
 
   eventChangeChecked = (id) => {
+    const todoByIndex = this.getTodoById(id);
+    todoByIndex.isChecked = !todoByIndex.isChecked;
 
-    this.setState({
-      todoList: this.state.todoList.map( (todo) => {
-        if (todo.id === id) {
-          todo.isChecked = !todo.isChecked;
-        }
-        return todo;
-      })
-    });
-
-    // this.todoList = this.todoList.map((todo) => {
-    //   if (todo.id === id) {
-    //     todo.isChecked = !todo.isChecked;
-    //   }
-    //   return todo;
-    // });
-    
-    // this.changeListOfNavPages();
-    
-    // if (this.prevChoosedFilter !== 'all') {
-    //   // setTimeout(() => {
-    //   //   let li = evTarg.closest('li');
-    //   //   li.remove();
-
-    //   //   if (this.prevChoosedNav !== this.navListCounter){
-    //   //     this.moveToTheNavPage(this.prevChoosedNav);
-    //   //   } else {
-    //   //     if (this.choosedTodoList().length < (this.navListCounter * this.filterValue) && this.navListCounter !== 1 && this.choosedTodoList().length % this.filterValue === 0) {
-    //   //       this.changeListOfNavPages();
-    //   //     }
-    //   //   }
-    //   // },190);
-    // }
+    if (this.prevChoosedNav !== this.navListCounter) {
+      this.moveToTheNavPage(this.prevChoosedNav);
+    } else {
+      this.changeListOfNavPages();
+    }
   }
   
   eventChangeCheckedForAll = (event) => {
-    
-    this.setState({
-      todoList: this.state.todoList.map( (todo) => {
-        if (event.target.checked){
-          todo.isChecked = true;
-        } else {
-          todo.isChecked = false;
-        }
-        return todo;
-      })
-    })
+    let todos = this.todoList;
 
-    // let todos = this.todoList;
+    for(let i = 0; i < todos.length; i++) {
+      if (event.target.checked){
+        todos[i].isChecked = true;
+      } else {
+        todos[i].isChecked = false;
+      }
+    }
 
-    // for(let i = 0; i < todos.length; i++) {
-    //   if (event.target.checked){
-    //     todos[i].isChecked = true;
-    //   } else {
-    //     todos[i].isChecked = false;
-    //   }
-    // }
-
-    // switch(this.prevChoosedFilter) {
-    //   case 'all': 
-    //     this.moveToTheNavPage(this.prevChoosedNav);
-    //     break;
-    //   case 'active':
-    //     this.changeListOfNavPages();
-    //     break;
-    //   case 'complited':
-    //     this.changeListOfNavPages();
-    //     break;
-    // }
+    switch(this.prevChoosedFilter) {
+      case 'all': 
+        this.moveToTheNavPage(this.prevChoosedNav);
+        break;
+      case 'active':
+        this.changeListOfNavPages();
+        break;
+      case 'complited':
+        this.changeListOfNavPages();
+        break;
+    }
   }
 
   eventRemoveTodo = (id) => {
-    this.setState({
-      todoList: this.state.todoList.filter(todo => todo.id !== id)
-    });
-
-    // this.todoList = this.todoList.filter(todo => todo.id !== id);
-
-    // if (this.prevChoosedNav !== this.navListCounter) {
-    //   this.moveToTheNavPage(this.prevChoosedNav);
-    // } else {
-    //  if (this.choosedTodoList().length < (this.navListCounter * this.filterValue) && this.navListCounter !== 1 && this.choosedTodoList().length % this.filterValue === 0) {
-        // this.changeListOfNavPages();
-    //   }
-    // }
+    this.todoList = this.todoList.filter(todo => todo.id !== id);
+    this.moveToTheNavPage(this.prevChoosedNav);
   }
-
 
   eventRemoveAllChecked = () => {
-    this.setState({
-      todoList: this.state.todoList.filter(todo => !todo.isChecked)
-    })
-
-    // this.todoList = this.todoList.filter(todo => !todo.isChecked);
-    // this.changeListOfNavPages();
+    this.todoList = this.todoList.filter(todo => !todo.isChecked);
+    this.changeListOfNavPages();
   }
 
-  // choosedTodoList = () => {
-  //   let todos;
+  choosedTodoList = () => {
+    let todos;
 
-  //   switch(this.prevChoosedFilter) {
-  //     case 'all': 
-  //       todos = this.todoList;
-  //       break;
-  //     case 'active':
-  //       todos = this.todoList.filter(todo => !todo.isChecked);
-  //       break;
-  //     case 'complited':
-  //       todos = this.todoList.filter(todo => todo.isChecked);
-  //       break;
-  //   }
-  //   return todos;
-  // }
+    switch(this.prevChoosedFilter) {
+      case 'all': 
+        todos = this.todoList;
+        break;
+      case 'active':
+        todos = this.todoList.filter(todo => !todo.isChecked);
+        break;
+      case 'complited':
+        todos = this.todoList.filter(todo => todo.isChecked);
+        break;
+    }
+    return todos;
+  }
 
-  getCountOfNotChechedTodos = () => {
-    let count = this.state.todoList.length;
+  getCountOfNotCheckedTodos = () => {
+    let count = this.todoList.length;
 
-    for(let i = 0; i < this.state.todoList.length; i++) {
+    for(let i = 0; i < this.todoList.length; i++) {
 
-      if (this.state.todoList[i].isChecked) {
+      if (this.todoList[i].isChecked) {
         count--;
       }
     }
@@ -336,6 +247,10 @@ class Home extends React.Component{
       return false;
     }
   }
+
+  getTodoById = (id) => {
+    return this.todoList.find(todo => todo.id === parseInt(id));
+  }
 }
 
-export default Home;
+

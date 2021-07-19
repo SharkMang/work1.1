@@ -5,6 +5,7 @@ export default class Footer extends React.Component {
     super(props);
 
     this.prevChoosedFilter = 'all';
+    this.todosCount = this.props.notCheckedTodos;
 
     this.props.EE.subscribe('chooseFilter', (id) => {this.renderClassSelected(id)});
     this.props.EE.subscribe('changeCountActiveTodo', (value) => {
@@ -34,11 +35,11 @@ export default class Footer extends React.Component {
   }
 
   render() {
-
+    
     return (
       <footer className='footer'>
         <span id='span'>
-          2 items left.
+          {this.todosCount} items left.
         </span>
         <ul className='ulFooter'>
           <li id='all' className='liFooter selected' onClick={() => {this.props.EE.emit('chooseFilter', 'all')}}>All</li>

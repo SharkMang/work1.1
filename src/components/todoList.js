@@ -4,24 +4,19 @@ import TodoItem from "./todoItem.js";
 export default class TodoList extends React.Component {
   constructor(props) {
     super(props);
-    this.count = 0;
-    this.filterValue = props.todos.filterValue;
+    
+    this.filterValue = props.filterValue;
   }
 
   render() {
-    const choosedFilter = this.props.todos.choosedFilter;
-    let todos;
+    let todos = [];
+    const currentTodoList = this.props.todos.todoList;
+    const countOfRenderTodos = this.props.todos.choosedNav * this.filterValue;
 
-    switch(choosedFilter) {
-      case 'all': 
-        todos = this.props.todos.todoList;
-        break;
-      case 'active':
-        todos = this.props.todos.todoList.filter(todo => !todo.isChecked);
-        break;
-      case 'complited':
-        todos = this.props.todos.todoList.filter(todo => todo.isChecked);
-        break;
+    for(let i = (countOfRenderTodos - this.filterValue); i < countOfRenderTodos; i++) {
+      if (currentTodoList[i]) {
+        todos.push(currentTodoList[i]);
+      }
     }
 
     return (
@@ -33,22 +28,5 @@ export default class TodoList extends React.Component {
         </ul>
       </section>
     );
-  }
-
-  choosedTodoList = () => {
-    let todos;
-
-    switch(this.prevChoosedFilter) {
-      case 'all': 
-        todos = this.todoList;
-        break;
-      case 'active':
-        todos = this.todoList.filter(todo => !todo.isChecked);
-        break;
-      case 'complited':
-        todos = this.todoList.filter(todo => todo.isChecked);
-        break;
-    }
-    return todos;
   }
 }
